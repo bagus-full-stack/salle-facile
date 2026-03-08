@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f9fafb; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .header { text-align: center; border-bottom: 2px solid #f3f4f6; padding-bottom: 20px; margin-bottom: 20px; }
+        .brand { color: #0b648f; font-size: 24px; font-weight: bold; }
+        .content { color: #374151; line-height: 1.6; }
+        .details { background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0; }
+        .footer { text-align: center; color: #9ca3af; font-size: 12px; margin-top: 30px; }
+        .button { display: inline-block; padding: 12px 24px; background-color: #0b648f; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="brand">🏢 SalleFacile</div>
+    </div>
+
+    <div class="content">
+        <h2>Bonjour {{firstName}},</h2>
+        <p>Votre réservation a été confirmée avec succès ! Voici le récapitulatif de votre commande :</p>
+
+        <div class="details">
+            <strong>Référence :</strong> {{reference}}<br>
+            <strong>Salle :</strong> {{roomName}}<br>
+            <strong>Date :</strong> {{date}} à {{time}}<br>
+            <strong>Montant total :</strong> {{price}} €
+        </div>
+
+        <p>Vous pouvez retrouver votre facture au format PDF et gérer votre réservation directement depuis votre espace personnel.</p>
+
+        <div style="text-align: center;">
+            <a href="https://ton-site.com/mon-espace" class="button">Accéder à mon espace</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2024 SalleFacile. Tous droits réservés.<br>
+        Ceci est un email automatique, merci de ne pas y répondre.
+    </div>
+</div>
+</body>
+</html>

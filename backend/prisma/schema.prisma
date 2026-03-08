@@ -1,0 +1,214 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// ENUMS
+// ==========================================
+
+enum Role {
+  SUPER_ADMIN
+  MANAGER
+  STAFF
+  USER
+}
+
+enum AccountType {
+  INDIVIDUAL
+  PROFESSIONAL
+}
+
+enum RoomCategory {
+  MEETING // Salle de réunion
+  STUDIO // Studio créatif
+  EVENT // Espace événementiel / Grand auditorium
+  OFFICE // Bureau privé
+}
+
+enum ReservationStatus {
+  PENDING // En attente (ex: paiement sur place prévu)
+  CONFIRMED // Validée et payée
+  CANCELLED // Annulée
+}
+
+enum PaymentStatus {
+  PENDING // En attente de paiement
+  COMPLETED // Payé
+  FAILED // Échec de transaction
+  REFUNDED // Remboursé suite à une annulation < 24h
+}
+
+enum PaymentMethod {
+  CREDIT_CARD // Paiement en ligne
+  ONSITE // Paiement sur place
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+// ==========================================
+// MODELS
+// ==========================================
+
+model User {
+  id           String @id @default(uuid())
+  email        String @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+
+  // Profil
+  accountType AccountType @default(INDIVIDUAL)
+  companyName String? // Nullable si Particulier
+  siret       String? // Nullable si Particulier
+
+  // Droits et statuts
+  role     Role    @default(USER)
+  isActive Boolean @default(true)
+
+  // Relations
+  reservations Reservation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Room {
+  id          String       @id @default(uuid())
+  name        String
+  description String       @db.Text
+  category    RoomCategory
+  capacity    Int
+  surfaceArea Int // En m2
+
+  // Tarification (Stockée en Decimal pour éviter les erreurs d'arrondi)
+  hourlyPrice  Decimal @db.Decimal(10, 2)
+  halfDayPrice Decimal @db.Decimal(10, 2)
+  fullDayPrice Decimal @db.Decimal(10, 2)
+
+  isActive Boolean @default(true)
+
+  // Relations
+  images       RoomImage[]
+  equipments   Equipment[] // Relation implicite N:M gérée par Prisma
+  reservations Reservation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("rooms")
+}
+
+model RoomImage {
+  id        String  @id @default(uuid())
+  url       String
+  isPrimary Boolean @default(false)
+
+  // Relation
+  room   Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId String
+
+  createdAt DateTime @default(now())
+
+  @@map("room_images")
+}
+
+model Equipment {
+  id      String @id @default(uuid())
+  name    String @unique // ex: "Wifi Haut Débit", "Vidéoprojecteur"
+  iconRef String // Référence pour l'icône front-end (ex: 'wifi', 'projector')
+
+  // Relation
+  rooms Room[] // Relation implicite N:M
+
+  @@map("equipments")
+}
+
+model PromoCode {
+  id           String       @id @default(uuid())
+  code         String       @unique
+  discountType DiscountType
+  value        Decimal      @db.Decimal(10, 2) // Pourcentage ou montant fixe
+  validUntil   DateTime?
+  isActive     Boolean      @default(true)
+
+  @@map("promo_codes")
+}
+
+model Reservation {
+  id        String @id @default(uuid())
+  reference String @unique // ex: #SF-2023-889
+
+  // Dates et heures
+  startTime DateTime
+  endTime   DateTime
+  duration  Float // Durée totale en heures calculée
+
+  // Tarification snapshot (au moment de la réservation)
+  subtotal   Decimal @db.Decimal(10, 2)
+  discount   Decimal @default(0) @db.Decimal(10, 2)
+  taxAmount  Decimal @db.Decimal(10, 2)
+  totalPrice Decimal @db.Decimal(10, 2)
+
+  status ReservationStatus @default(PENDING)
+  notes  String?           @db.Text
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Restrict)
+  userId String
+
+  room   Room   @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  roomId String
+
+  payment Payment? // 1:1 relation
+  invoice Invoice? // 1:1 relation
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Index pour optimiser les requêtes de disponibilité sur le calendrier
+  @@index([roomId, startTime, endTime])
+  @@map("reservations")
+}
+
+model Payment {
+  id             String        @id @default(uuid())
+  amount         Decimal       @db.Decimal(10, 2)
+  method         PaymentMethod
+  status         PaymentStatus @default(PENDING)
+  transactionRef String? // ID de transaction Stripe/Banque
+
+  // Relation 1:1 avec Reservation
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  reservationId String      @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("payments")
+}
+
+model Invoice {
+  id            String  @id @default(uuid())
+  invoiceNumber String  @unique // ex: INV-2024-001
+  pdfUrl        String? // Lien vers le stockage S3/Local du PDF généré
+
+  // Relation 1:1 avec Reservation
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  reservationId String      @unique
+
+  issuedAt DateTime @default(now())
+
+  @@map("invoices")
+}
