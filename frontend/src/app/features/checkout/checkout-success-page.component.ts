@@ -58,16 +58,68 @@ import { HttpClient } from '@angular/common/http';
       <div class="bg-gray-100/50 p-8 rounded-3xl border border-gray-200 flex justify-center shadow-inner">
         <div class="bg-white w-full max-w-sm rounded-xl shadow-lg p-8 transform rotate-1 hover:rotate-0 transition duration-300">
           <div class="flex justify-between items-start mb-8">
-            <div class="font-bold text-[#2b5e6e]">SalleFacile</div>
+            <div class="flex items-center gap-2 font-bold text-[#2b5e6e]">
+              <span class="text-lg">🏢</span> SalleFacile
+            </div>
             <div class="text-right">
               <div class="text-2xl font-light text-gray-300 tracking-widest">REÇU</div>
               <div class="text-xs text-gray-400">#SF-2023-889</div>
             </div>
           </div>
+
+          <div class="flex justify-between text-xs text-gray-400 mb-4 pb-4 border-b border-gray-100">
+            <div>
+              <div class="font-bold text-gray-500 uppercase tracking-wider mb-1">DE</div>
+              <div class="font-bold text-gray-800">SalleFacile Inc.</div>
+              <div class="text-gray-500">12 Rue de la Paix</div>
+              <div class="text-gray-500">75002 Paris, France</div>
+            </div>
+            <div class="text-right">
+              <div class="font-bold text-gray-500 uppercase tracking-wider mb-1">FACTURÉ À</div>
+              <div class="font-bold text-gray-800">Jean Dupont</div>
+              <div class="text-gray-500">Startup Innovante SAS</div>
+              <div class="text-gray-500">jean.dupont@email.com</div>
+            </div>
+          </div>
+
+          <table class="w-full text-xs mb-4">
+            <thead>
+              <tr class="text-gray-400 border-b border-gray-100">
+                <th class="text-left pb-2 font-medium">Description</th>
+                <th class="text-center pb-2 font-medium">Qté</th>
+                <th class="text-right pb-2 font-medium">Total</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-700">
+              <tr class="border-b border-gray-50">
+                <td class="py-2 pr-2">Location Salle "L'Atelier" - Journée complète</td>
+                <td class="py-2 text-center">1</td>
+                <td class="py-2 text-right">950,00 €</td>
+              </tr>
+              <tr class="border-b border-gray-50">
+                <td class="py-2 pr-2">Pack Traiteur (Déjeuner + Café)</td>
+                <td class="py-2 text-center">12</td>
+                <td class="py-2 text-right">240,00 €</td>
+              </tr>
+              <tr>
+                <td class="py-2 pr-2">Frais de service</td>
+                <td class="py-2 text-center">1</td>
+                <td class="py-2 text-right">60,00 €</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="text-xs text-right space-y-1 border-t border-gray-100 pt-3 mb-4">
+            <div class="flex justify-between text-gray-500"><span>Sous-total</span><span>1 250,00 €</span></div>
+            <div class="flex justify-between text-gray-500"><span>TVA (20%)</span><span>Inclus</span></div>
+          </div>
+
           <div class="border-t border-dashed border-gray-200 pt-4 flex justify-between font-bold text-gray-900">
             <span>Total Payé</span>
             <span class="text-[#1da1f2]">1 250,00 €</span>
           </div>
+
+          <p class="text-xs text-gray-400 text-center mt-6 italic">Merci de votre confiance. Ce document vaut preuve de paiement.</p>
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -8,106 +8,82 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="max-w-7xl mx-auto px-4 py-8 font-sans bg-gray-50/50 min-h-screen">
-      <h1 class="text-3xl font-bold text-gray-900 mb-8">Flux de Réservation</h1>
+    <div class="min-h-screen bg-white font-sans flex flex-col">
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-        <div class="lg:col-span-2 space-y-8">
-
-          <section>
-            <h2 class="text-lg font-bold mb-4">Options de Forfait</h2>
-            <div class="grid grid-cols-3 gap-4">
-              <button (click)="packageType.set('HOURLY')"
-                [class.border-[#1da1f2]]="packageType() === 'HOURLY'"
-                [class.ring-1]="packageType() === 'HOURLY'"
-                class="p-4 border rounded-xl text-center bg-white hover:border-[#1da1f2] transition">
-                <div class="text-[#1da1f2] mb-2 text-xl">🕒</div>
-                <div class="font-bold text-gray-900">Tarif Horaire</div>
-                <div class="text-sm text-[#1da1f2]">35€ / heure</div>
-              </button>
-              <button (click)="packageType.set('HALF_DAY')"
-                [class.border-[#1da1f2]]="packageType() === 'HALF_DAY'"
-                class="p-4 border rounded-xl text-center bg-white hover:border-gray-400 transition">
-                <div class="text-gray-600 mb-2 text-xl">◑</div>
-                <div class="font-bold text-gray-900">Demi-Journée</div>
-                <div class="text-sm text-gray-500">4 heures - 120€</div>
-              </button>
-              <button (click)="packageType.set('FULL_DAY')"
-                [class.border-[#1da1f2]]="packageType() === 'FULL_DAY'"
-                class="p-4 border rounded-xl text-center bg-white hover:border-gray-400 transition">
-                <div class="text-gray-600 mb-2 text-xl">📅</div>
-                <div class="font-bold text-gray-900">Journée Complète</div>
-                <div class="text-sm text-gray-500">8h+ - 200€</div>
-              </button>
-            </div>
-          </section>
-
-          <section>
-            <h2 class="text-lg font-bold mb-4">Méthode de Paiement</h2>
-            <div class="space-y-4">
-              <label class="flex gap-3 p-4 border border-[#1da1f2] bg-blue-50/10 rounded-xl cursor-pointer">
-                <input type="radio" name="payment" [checked]="paymentMethod() === 'CREDIT_CARD'" (change)="paymentMethod.set('CREDIT_CARD')" class="mt-1">
-                <div>
-                  <div class="font-bold text-gray-900">Paiement en ligne (Carte de Crédit/Débit)</div>
-                  <div class="text-sm text-gray-500">Paiement sécurisé via notre plateforme.</div>
-
-                  @if (paymentMethod() === 'CREDIT_CARD') {
-                    <div class="mt-4 grid gap-4 p-4 border rounded-lg bg-white">
-                      <input type="text" placeholder="Nom complet sur la carte" class="w-full border rounded-md p-2 text-sm">
-                      <input type="text" placeholder="Numéro de carte" class="w-full border rounded-md p-2 text-sm">
-                      <div class="grid grid-cols-2 gap-4">
-                        <input type="text" placeholder="MM/AA" class="w-full border rounded-md p-2 text-sm">
-                        <input type="text" placeholder="CVC" class="w-full border rounded-md p-2 text-sm">
-                      </div>
-                    </div>
-                  }
-                </div>
-              </label>
-
-              <label class="flex gap-3 p-4 border rounded-xl cursor-pointer">
-                <input type="radio" name="payment" [checked]="paymentMethod() === 'ONSITE'" (change)="paymentMethod.set('ONSITE')" class="mt-1">
-                <div>
-                  <div class="font-bold text-gray-900">Paiement sur place</div>
-                  <div class="text-sm text-gray-500">Le paiement sera effectué directement à l'établissement lors de votre arrivée.</div>
-                </div>
-              </label>
-            </div>
-          </section>
-
-          <button (click)="submitReservation()" [disabled]="isSubmitting()" class="w-full bg-[#82b1ff] hover:bg-blue-500 text-white font-bold py-4 rounded-xl text-lg shadow-sm transition">
-            {{ isSubmitting() ? 'Traitement...' : 'Confirmer la réservation' }}
-          </button>
-
+      <header class="border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-2 font-bold text-[#2b5e6e] text-lg">
+          <span class="text-xl">🏢</span> SalleFacile
         </div>
+        <nav class="flex items-center gap-6 text-sm font-medium text-gray-600">
+          <a href="/" class="hover:text-[#2b5e6e] transition">Accueil</a>
+          <a href="/mon-espace" class="hover:text-[#2b5e6e] transition">Mon Espace</a>
+        </nav>
+        <div class="w-9 h-9 rounded-full overflow-hidden border-2 border-green-400">
+          <img src="https://i.pravatar.cc/100?img=5" alt="User" class="w-full h-full object-cover">
+        </div>
+      </header>
 
-        <div class="lg:col-span-1">
-          <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 sticky top-8">
-            <h2 class="text-lg font-bold mb-6">Récapitulatif de la Réservation</h2>
+      <main class="flex-1 max-w-2xl mx-auto w-full px-4 py-10">
 
-            <div class="border-b pb-4 mb-4 space-y-3 text-sm">
-              <div class="flex justify-between">
-                <span class="text-gray-500">Sous-total (4h x 35€)</span>
-                <span class="font-medium">140,00 €</span>
-              </div>
-              <div class="flex justify-between text-green-600">
-                <span>Réduction</span>
-                <span>-20,00 €</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-500">Taxes (20%)</span>
-                <span class="font-medium">24,00 €</span>
-              </div>
-            </div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Confirmation et Paiement</h1>
 
-            <div class="flex justify-between items-end mb-2">
-              <span class="font-bold text-gray-900">Total à payer</span>
-              <span class="text-2xl font-bold text-gray-900">144.00 €</span>
-            </div>
-            <div class="text-right text-xs text-gray-500 mb-6">Paiement en ligne: 144.00 €</div>
+        <div class="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl p-4 mb-8">
+          <span class="text-blue-500 text-lg mt-0.5">✉️</span>
+          <div>
+            <p class="font-bold text-blue-600">Réservation confirmée !</p>
+            <p class="text-sm text-gray-600">Un e-mail de confirmation avec tous les détails a été envoyé à votre adresse.</p>
           </div>
         </div>
-      </div>
+
+        <section class="mb-8">
+          <h2 class="text-xl font-bold text-gray-900 mb-4">Résumé de votre réservation</h2>
+          <div class="border-b border-gray-200 pb-6 flex gap-6 items-start">
+            <img src="https://images.unsplash.com/photo-1517502884422-41eaead166d4?auto=format&fit=crop&w=400&q=80" alt="Salle" class="w-48 h-32 object-cover rounded-lg flex-shrink-0">
+            <div class="space-y-2">
+              <h3 class="text-lg font-bold text-gray-900">Salle de Conférence 'Lumière'</h3>
+              <div class="flex items-center gap-2 text-sm text-gray-600">
+                <span class="text-[#1da1f2]">📅</span> Mardi 23 Juillet 2024
+              </div>
+              <div class="flex items-center gap-2 text-sm text-gray-600">
+                <span class="text-[#1da1f2]">🕐</span> 09:00 - 17:00 (8 heures)
+              </div>
+              <div class="flex items-center gap-2 text-sm font-bold text-[#1da1f2]">
+                <span>💳</span> 350,00 €
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-xl font-bold text-gray-900 mb-4">Informations de Facturation</h2>
+          <div class="border-b border-gray-200 pb-6 space-y-1 text-gray-700">
+            <p class="font-semibold">Jean Dupont</p>
+            <p>123 Rue de la République</p>
+            <p>75001 Paris</p>
+            <p>France</p>
+          </div>
+        </section>
+
+        <div class="space-y-3">
+          <button (click)="payNow()" [disabled]="isSubmitting()" class="w-full bg-[#1da1f2] hover:bg-blue-500 text-white font-bold py-4 rounded-xl text-lg transition disabled:opacity-50">
+            {{ isSubmitting() ? 'Traitement...' : 'Payer maintenant' }}
+          </button>
+          <button (click)="payLater()" [disabled]="isSubmitting()" class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-800 font-bold py-4 rounded-xl text-lg transition disabled:opacity-50">
+            Payer plus tard
+          </button>
+          <p class="text-center text-sm text-gray-400">Un e-mail de confirmation sera envoyé avec les détails de paiement.</p>
+        </div>
+
+      </main>
+
+      <footer class="border-t border-gray-100 px-6 py-4 flex justify-between items-center text-xs text-gray-400">
+        <span>© 2024 SalleFacile. Tous droits réservés.</span>
+        <div class="flex gap-4">
+          <a href="#" class="hover:text-gray-600">Conditions d'utilisation</a>
+          <a href="#" class="hover:text-gray-600">Politique de confidentialité</a>
+        </div>
+      </footer>
+
     </div>
   `
 })
@@ -115,34 +91,43 @@ export class CheckoutFlowPageComponent {
   private http = inject(HttpClient);
   private router = inject(Router);
 
-  // ⚡️ État local via Signals
-  public packageType = signal<'HOURLY' | 'HALF_DAY' | 'FULL_DAY'>('HOURLY');
-  public paymentMethod = signal<'CREDIT_CARD' | 'ONSITE'>('CREDIT_CARD');
   public isSubmitting = signal(false);
 
-  // Computed properties (Exemple de calcul dynamique basé sur les signals)
-  public subtotal = computed(() => {
-    switch (this.packageType()) {
-      case 'HOURLY': return 140; // Hardcodé pour la démo, viendrait des dates sélectionnées
-      case 'HALF_DAY': return 120;
-      case 'FULL_DAY': return 200;
-    }
-  });
-
-  submitReservation() {
+  payNow() {
     this.isSubmitting.set(true);
 
     const payload = {
-      roomId: 'ID_DE_LA_SALLE', // Passé via router state
+      roomId: 'ID_DE_LA_SALLE',
       startTime: new Date().toISOString(),
-      endTime: new Date(Date.now() + 4 * 3600000).toISOString(),
-      paymentMethod: this.paymentMethod()
+      endTime: new Date(Date.now() + 8 * 3600000).toISOString(),
+      paymentMethod: 'CREDIT_CARD'
     };
 
     this.http.post('http://localhost:3000/reservations', payload).subscribe({
-      next: (res) => {
+      next: () => {
         this.isSubmitting.set(false);
-        // Redirection vers la page de succès "Paiement Réussi" (confirmation_de_paiement_et_re_u_pdf.png)
+        this.router.navigate(['/checkout/success']);
+      },
+      error: (err) => {
+        this.isSubmitting.set(false);
+        alert("Erreur lors de la réservation : " + err.error.message);
+      }
+    });
+  }
+
+  payLater() {
+    this.isSubmitting.set(true);
+
+    const payload = {
+      roomId: 'ID_DE_LA_SALLE',
+      startTime: new Date().toISOString(),
+      endTime: new Date(Date.now() + 8 * 3600000).toISOString(),
+      paymentMethod: 'ONSITE'
+    };
+
+    this.http.post('http://localhost:3000/reservations', payload).subscribe({
+      next: () => {
+        this.isSubmitting.set(false);
         this.router.navigate(['/checkout/success']);
       },
       error: (err) => {

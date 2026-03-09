@@ -29,6 +29,7 @@ import { AuthService } from '../../core/auth/auth.service';
               <div class="flex -space-x-3">
                 <img class="w-10 h-10 rounded-full border-2 border-[#132832]" src="https://i.pravatar.cc/100?img=1" alt="User">
                 <img class="w-10 h-10 rounded-full border-2 border-[#132832]" src="https://i.pravatar.cc/100?img=2" alt="User">
+                <img class="w-10 h-10 rounded-full border-2 border-[#132832]" src="https://i.pravatar.cc/100?img=3" alt="User">
                 <div class="w-10 h-10 rounded-full border-2 border-[#132832] bg-white/20 flex items-center justify-center text-xs font-bold">+2k</div>
               </div>
               <div>

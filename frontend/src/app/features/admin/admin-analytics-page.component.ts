@@ -75,19 +75,42 @@ import Chart from 'chart.js/auto';
             </thead>
             <tbody class="divide-y divide-gray-100 text-gray-900">
               <tr>
-                <td class="py-5 font-medium text-gray-600">Total Réservations</td>
+                <td class="py-5 flex items-center gap-2 font-medium text-gray-600">
+                  <span class="text-gray-400">📅</span> Total Réservations
+                </td>
                 <td class="py-5 font-extrabold text-lg">45</td>
                 <td class="py-5 font-extrabold text-lg">32</td>
                 <td class="py-5"><span class="bg-red-50 text-red-600 px-2 py-1 rounded text-xs font-bold">-28.8%</span></td>
               </tr>
               <tr>
-                <td class="py-5 font-medium text-gray-600">Revenu Total</td>
+                <td class="py-5 flex items-center gap-2 font-medium text-gray-600">
+                  <span class="text-gray-400">💳</span> Revenu Total
+                </td>
                 <td class="py-5 font-extrabold text-lg">12 500€</td>
                 <td class="py-5 font-extrabold text-lg">18 200€</td>
                 <td class="py-5"><span class="bg-green-50 text-green-600 px-2 py-1 rounded text-xs font-bold">+45.6%</span></td>
               </tr>
+              <tr>
+                <td class="py-5 flex items-center gap-2 font-medium text-gray-600">
+                  <span class="text-gray-400">⏱</span> Taux d'Occupation
+                </td>
+                <td class="py-5 font-extrabold text-lg">78%</td>
+                <td class="py-5 font-extrabold text-lg">65%</td>
+                <td class="py-5"><span class="bg-red-50 text-red-600 px-2 py-1 rounded text-xs font-bold">-13 pts</span></td>
+              </tr>
+              <tr>
+                <td class="py-5 flex items-center gap-2 font-medium text-gray-600">
+                  <span class="text-gray-400">🕐</span> Créneau Populaire
+                </td>
+                <td class="py-5 font-medium text-gray-700">14:00 - 16:00</td>
+                <td class="py-5 font-medium text-gray-700">09:00 - 12:00</td>
+                <td class="py-5"><span class="text-[#2dd4bf] italic text-sm font-medium">Different</span></td>
+              </tr>
             </tbody>
           </table>
+          <div class="border-t border-gray-100 pt-3 mt-2 text-right">
+            <span class="text-xs text-gray-400">ℹ️ Données mises à jour il y a 2h</span>
+          </div>
         </div>
 
       </div>
