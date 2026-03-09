@@ -1,5 +1,6 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { Room } from '../../../core/services/room.service';
 
 @Component({
@@ -89,7 +90,7 @@ import { Room } from '../../../core/services/room.service';
               </div>
             </div>
 
-            <button class="w-full bg-[#1da1f2] hover:bg-blue-500 text-white font-semibold py-3.5 rounded-xl transition-colors shadow-sm">
+            <button (click)="reserveRoom()" class="w-full bg-[#1da1f2] hover:bg-blue-500 text-white font-semibold py-3.5 rounded-xl transition-colors shadow-sm">
               Réserver cette salle
             </button>
           </div>
@@ -100,6 +101,12 @@ import { Room } from '../../../core/services/room.service';
   `
 })
 export class RoomDetailsUiComponent {
+  private router = inject(Router);
+
   // Le Smart Component passera l'objet Room ici
   @Input({ required: true }) room!: Room;
+
+  reserveRoom() {
+    this.router.navigate(['/checkout'], { state: { room: this.room } });
+  }
 }

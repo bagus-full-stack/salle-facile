@@ -3,6 +3,21 @@ import * as express from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto } from './dto/auth.dto';
 import {AuthGuard} from "@nestjs/passport";
+import { IsEmail, IsString, MinLength } from 'class-validator';
+
+class ForgotPasswordDto {
+    @IsEmail()
+    email: string;
+}
+
+class ResetPasswordDto {
+    @IsString()
+    token: string;
+
+    @IsString()
+    @MinLength(8)
+    password: string;
+}
 
 @Controller('auth')
 export class AuthController {
@@ -48,5 +63,15 @@ export class AuthController {
 
         // On redirige vers Angular en passant le token dans l'URL
         res.redirect(`http://localhost:4200/oauth/callback?token=${token}`);
+    }
+
+    @Post('forgot-password')
+    async forgotPassword(@Body() dto: ForgotPasswordDto) {
+        return this.authService.forgotPassword(dto.email);
+    }
+
+    @Post('reset-password')
+    async resetPassword(@Body() dto: ResetPasswordDto) {
+        return this.authService.resetPassword(dto.token, dto.password);
     }
 }

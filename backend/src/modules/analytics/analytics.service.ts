@@ -116,6 +116,17 @@ export class AnalyticsService {
         const avgDuration1 = totalRes1 ? hoursData1.reduce((a,b)=>a+b,0) / totalRes1 : 0;
         const avgDuration2 = totalRes2 ? hoursData2.reduce((a,b)=>a+b,0) / totalRes2 : 0;
 
+        // 8. Calcul du créneau populaire (heure de début la plus fréquente)
+        const popularSlot1 = this.calculatePopularTimeSlot(reservations.filter(r => r.roomId === room1Id));
+        const popularSlot2 = this.calculatePopularTimeSlot(reservations.filter(r => r.roomId === room2Id));
+
+        // 9. Calcul du taux d'occupation moyen (moyenne sur les 6 mois)
+        const avgOccupancy1 = Math.round(occupancyData1.reduce((a,b)=>a+b,0) / 6);
+        const avgOccupancy2 = Math.round(occupancyData2.reduce((a,b)=>a+b,0) / 6);
+
+        const totalRevenue1 = revenueData1.reduce((a,b)=>a+b,0);
+        const totalRevenue2 = revenueData2.reduce((a,b)=>a+b,0);
+
         // Format final attendu par notre frontend Angular (Chart.js)
         return {
             labels: monthLabels,
@@ -136,16 +147,64 @@ export class AnalyticsService {
                 petitFormat: [
                     totalRes1,
                     Math.round(avgDuration1),
-                    revenueData1.reduce((a,b)=>a+b,0),
+                    totalRevenue1,
                     Math.max(...occupancyData1, 0)
                 ],
                 grandFormat: [
                     totalRes2,
                     Math.round(avgDuration2),
-                    revenueData2.reduce((a,b)=>a+b,0),
+                    totalRevenue2,
                     Math.max(...occupancyData2, 0)
                 ]
+            },
+            kpis: {
+                room1: {
+                    totalReservations: totalRes1,
+                    totalRevenue: totalRevenue1,
+                    avgOccupancy: avgOccupancy1,
+                    popularTimeSlot: popularSlot1,
+                },
+                room2: {
+                    totalReservations: totalRes2,
+                    totalRevenue: totalRevenue2,
+                    avgOccupancy: avgOccupancy2,
+                    popularTimeSlot: popularSlot2,
+                }
             }
         };
+    }
+
+    private calculatePopularTimeSlot(reservations: { startTime: Date; duration: number }[]): string {
+        if (reservations.length === 0) return 'N/A';
+
+        const hourCount: Record<number, number> = {};
+        for (const res of reservations) {
+            const hour = res.startTime.getHours();
+            hourCount[hour] = (hourCount[hour] || 0) + 1;
+        }
+
+        const entries = Object.entries(hourCount);
+        if (entries.length === 0) return 'N/A';
+
+        const popularHour = entries.sort((a, b) => b[1] - a[1])[0][0];
+
+        const start = parseInt(popularHour);
+        const end = start + 2;
+        return `${String(start).padStart(2, '0')}:00 - ${String(end).padStart(2, '0')}:00`;
+    }
+
+    async getDefaultRoomIds(): Promise<[string, string]> {
+        const rooms = await this.prisma.room.findMany({
+            where: { isActive: true },
+            orderBy: { capacity: 'asc' },
+            take: 2,
+            select: { id: true }
+        });
+
+        if (rooms.length < 2) {
+            throw new BadRequestException('Il faut au moins 2 salles actives pour la comparaison.');
+        }
+
+        return [rooms[0].id, rooms[1].id];
     }
 }
