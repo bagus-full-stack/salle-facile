@@ -4,7 +4,9 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
-import { SharedModule } from '../../shared/shared.module'; // Contient ton PrismaService
+import { SharedModule } from '../../shared/shared.module';
+import {GoogleStrategy} from "./google.strategy";
+import {LinkedinStrategy} from "./linkedin.strategy"; // Contient ton PrismaService
 
 @Module({
     imports: [
@@ -17,7 +19,7 @@ import { SharedModule } from '../../shared/shared.module'; // Contient ton Prism
         }),
     ],
     controllers: [AuthController],
-    providers: [AuthService, JwtStrategy], // 👈 On n'oublie pas de déclarer la JwtStrategy !
+    providers: [AuthService, JwtStrategy, GoogleStrategy, LinkedinStrategy],
     exports: [AuthService],
 })
 export class AuthModule {}

@@ -151,4 +151,36 @@ export class AuthService {
             }
         };
     }
+
+    async validateOAuthLogin(profile: any, provider: 'google' | 'linkedin') {
+        const email = profile.emails[0].value;
+
+        // 1. Cherche si l'utilisateur existe déjà
+        let user = await this.prisma.user.findUnique({ where: { email } });
+
+        // 2. S'il n'existe pas, on le crée automatiquement
+        if (!user) {
+            // On génère un mot de passe aléatoire très complexe car il ne s'en servira pas
+            const randomPassword = require('crypto').randomBytes(16).toString('hex');
+            const hashedPassword = await bcrypt.hash(randomPassword, 10);
+
+            user = await this.prisma.user.create({
+                data: {
+                    email,
+                    passwordHash: hashedPassword,
+                    firstName: profile.name?.givenName || profile.displayName.split(' ')[0],
+                    lastName: profile.name?.familyName || profile.displayName.split(' ')[1] || '',
+                    accountType: 'INDIVIDUAL', // Par défaut
+                    role: 'USER',
+                    isActive: true,
+                },
+            });
+
+            // (Optionnel) Émettre l'événement de bienvenue
+            this.eventEmitter.emit('auth.welcome', { user });
+        }
+
+        // 3. On génère le même JWT que pour une connexion classique
+        return this.generateToken(user);
+    }
 }

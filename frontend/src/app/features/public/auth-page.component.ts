@@ -13,8 +13,7 @@ import { AuthService } from '../../core/auth/auth.service';
     <div class="min-h-screen flex bg-white font-sans">
 
       <div class="hidden lg:flex lg:w-1/2 relative bg-[#1f3d4a] text-white">
-<!--        <div class="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-overlay" style="background-image: url('assets/images/auth-bg.jpg');"></div>-->
-        <div class="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-overlay bg-[#132832]"></div>
+        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200" alt="Espace de travail" class="absolute inset-0 w-full h-full object-cover opacity-60">
         <div class="absolute inset-0 bg-gradient-to-t from-[#132832] to-transparent opacity-80"></div>
 
         <div class="relative z-10 flex flex-col justify-between p-12 h-full w-full">
@@ -81,8 +80,10 @@ import { AuthService } from '../../core/auth/auth.service';
                 </div>
                 <div class="relative">
                   <span class="absolute left-3 top-3 text-gray-400">🔒</span>
-                  <input type="password" formControlName="password" placeholder="••••••••" class="w-full bg-gray-50 border border-gray-100 rounded-lg py-3 pl-10 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#2b5e6e]">
-                  <span class="absolute right-3 top-3 text-gray-400 cursor-pointer hover:text-gray-600">👁️</span>
+                  <input [type]="showPassword() ? 'text' : 'password'" formControlName="password" placeholder="••••••••" class="w-full bg-gray-50 border border-gray-100 rounded-lg py-3 pl-10 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#2b5e6e]">
+                  <span class="absolute right-3 top-3 text-gray-400 cursor-pointer hover:text-gray-600" (click)="togglePassword()">
+                    {{ showPassword() ? '🙈' : '👁️' }}
+                  </span>
                 </div>
               </div>
 
@@ -155,7 +156,10 @@ import { AuthService } from '../../core/auth/auth.service';
                 <label class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
                 <div class="relative">
                   <span class="absolute left-3 top-2.5 text-gray-400">🔒</span>
-                  <input type="password" formControlName="password" placeholder="••••••••" class="w-full border border-gray-200 rounded-lg py-2.5 pl-10 pr-10 text-gray-700 focus:ring-2 focus:ring-[#2b5e6e] outline-none">
+                  <input [type]="showPassword() ? 'text' : 'password'" formControlName="password" placeholder="••••••••" class="w-full border border-gray-200 rounded-lg py-2.5 pl-10 pr-10 text-gray-700 focus:ring-2 focus:ring-[#2b5e6e] outline-none">
+                  <span class="absolute right-3 top-2.5 text-gray-400 cursor-pointer hover:text-gray-600" (click)="togglePassword()">
+                    {{ showPassword() ? '🙈' : '👁️' }}
+                  </span>
                 </div>
                 <p class="text-xs text-gray-400 mt-1">Le mot de passe doit contenir au moins 8 caractères.</p>
               </div>
@@ -172,14 +176,14 @@ import { AuthService } from '../../core/auth/auth.service';
           </div>
 
           <div class="grid grid-cols-2 gap-4 mt-6">
-            <button class="flex items-center justify-center gap-2 border border-gray-200 rounded-lg py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
+            <a href="http://localhost:3000/auth/google" class="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-gray-700 font-bold py-3 rounded-lg hover:bg-gray-50 transition shadow-sm">
               <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5"> Google
-            </button>
-            <button class="flex items-center justify-center gap-2 border border-gray-200 rounded-lg py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
-              <img src="https://www.svgrepo.com/show/475661/linkedin-color.svg" class="w-5 h-5"> LinkedIn
-            </button>
-          </div>
+            </a>
 
+            <a href="http://localhost:3000/auth/linkedin" class="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-gray-700 font-bold py-3 rounded-lg hover:bg-gray-50 transition shadow-sm">
+              <img src="https://www.svgrepo.com/show/475661/linkedin-color.svg" class="w-5 h-5"> LinkedIn
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -194,6 +198,7 @@ export class AuthPageComponent {
   // Signaux d'état
   public mode = signal<'LOGIN' | 'REGISTER'>('LOGIN');
   public isLoading = signal(false);
+  public showPassword = signal(false);
   public errorMessage = signal<string | null>(null);
 
   // Formulaire de Connexion
@@ -216,6 +221,10 @@ export class AuthPageComponent {
   setAccountType(type: 'INDIVIDUAL' | 'PROFESSIONAL') {
     this.registerForm.patchValue({ accountType: type });
     // Optionnel : Ajouter ou retirer dynamiquement les Validators requis pour la société
+  }
+
+  togglePassword() {
+    this.showPassword.update((value) => !value);
   }
 
   onLogin() {

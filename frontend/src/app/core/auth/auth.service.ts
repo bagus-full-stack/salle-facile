@@ -53,4 +53,50 @@ export class AuthService {
     }
     this.currentUser.set(response.user);
   }
+
+  loadUserFromToken(token: string) {
+    this.handleAuthentication(token);
+  }
+
+  private handleAuthentication(token: string) {
+    if (isPlatformBrowser(this.platformId)) {
+      // 1. On sauvegarde le token dans le navigateur
+      localStorage.setItem('access_token', token);
+    }
+
+    // 2. On décode le token pour lire les infos (sans librairie externe)
+    const decodedUser = this.decodeJwt(token);
+
+    // 3. On met à jour le Signal pour débloquer l'interface
+    if (decodedUser) {
+      this.currentUser.set(decodedUser);
+    }
+  }
+
+  private checkInitialAuth() {
+    if (isPlatformBrowser(this.platformId)) {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        // Si le token expire, on pourrait le vérifier ici,
+        // pour faire simple on le décode juste.
+        const decodedUser = this.decodeJwt(token);
+        if (decodedUser) {
+          this.currentUser.set(decodedUser);
+        } else {
+          this.logout();
+        }
+      }
+    }
+  }
+
+  private decodeJwt(token: string): any {
+    try {
+      const payload = token.split('.')[1];
+      // atob() décode le base64 natif du navigateur
+      const decoded = atob(payload);
+      return JSON.parse(decoded);
+    } catch (e) {
+      return null;
+    }
+  }
 }

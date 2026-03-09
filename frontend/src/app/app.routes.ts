@@ -16,6 +16,7 @@ import { authGuard } from './core/auth/auth.guard';
 import { adminGuard } from './core/auth/admin.guard';
 import {AdminReservationsPageComponent} from './features/admin/admin-reservations-page.component';
 import {AdminUsersPageComponent} from './features/admin/admin-users-page.component';
+import {OAuthCallbackComponent} from './features/public/oauth-callback.component';
 
 export const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -25,6 +26,7 @@ export const routes: Routes = [
   // ==========================================
   { path: 'login', component: AuthPageComponent },
   { path: 'salles/:id', component: RoomDetailsPageComponent },
+  { path: 'oauth/callback', component: OAuthCallbackComponent },
 
   // ==========================================
   // 🟡 ROUTES UTILISATEURS (Nécessite d'être connecté)

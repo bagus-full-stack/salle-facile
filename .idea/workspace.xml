@@ -4,9 +4,6 @@
     <list default="true" id="65ae8793-3702-43a2-8a33-941d45b4c7e3" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/backend/src/modules/analytics/analytics.controller.ts" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/src/modules/analytics/analytics.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/auth/auth.controller.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/auth/auth.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/auth/auth.service.ts" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/src/modules/auth/dto/auth.dto.ts" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/src/modules/auth/dto/login.dto.ts" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/src/modules/auth/dto/register.dto.ts" afterDir="false" />
@@ -44,7 +41,6 @@
       <change afterPath="$PROJECT_DIR$/frontend/src/app/features/admin/admin-users-page.component.ts" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/frontend/src/app/features/checkout/checkout-flow-page.component.ts" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/frontend/src/app/features/checkout/checkout-success-page.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/public/auth-page.component.ts" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/frontend/src/app/features/public/reset-password-page.component.ts" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/frontend/src/app/features/public/room-details-page.component.ts" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/frontend/src/app/features/user/user-dashboard-page.component.ts" afterDir="false" />
@@ -53,12 +49,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/angular.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.routes.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1247" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1247" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1249" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1249" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/global/pg_control" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/global/pg_control" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/pg_wal/000000010000000000000004" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/pg_wal/000000010000000000000004" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,7 +75,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/backend" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/frontend" />
   </component>
   <component name="ProjectColorInfo"><![CDATA[{
   "customColor": "",
@@ -163,7 +154,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1772961534536</updated>
-      <workItem from="1772961538261" duration="23114000" />
+      <workItem from="1772961538261" duration="26533000" />
     </task>
     <servers />
   </component>
