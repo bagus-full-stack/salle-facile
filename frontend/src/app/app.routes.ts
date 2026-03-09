@@ -10,6 +10,8 @@ import { AdminFinancePageComponent } from './features/admin/admin-finance-page.c
 import { AdminRoomEditPageComponent } from './features/admin/admin-room-edit-page.component';
 import { AdminAnalyticsPageComponent } from './features/admin/admin-analytics-page.component';
 import {HomePageComponent} from './features/public/home-page.component';
+import { ForgotPasswordPageComponent } from './features/public/forgot-password-page.component';
+import { ResetPasswordPageComponent } from './features/public/reset-password-page.component';
 
 // Imports de nos Guards fonctionnels
 import { authGuard } from './core/auth/auth.guard';
@@ -27,6 +29,8 @@ export const routes: Routes = [
   { path: 'login', component: AuthPageComponent },
   { path: 'salles/:id', component: RoomDetailsPageComponent },
   { path: 'oauth/callback', component: OAuthCallbackComponent },
+  { path: 'forgot-password', component: ForgotPasswordPageComponent },
+  { path: 'reset-password', component: ResetPasswordPageComponent },
 
   // ==========================================
   // 🟡 ROUTES UTILISATEURS (Nécessite d'être connecté)
