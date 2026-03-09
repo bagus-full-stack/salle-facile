@@ -129,8 +129,7 @@ import { RoomService } from '../../core/services/room.service';
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow duration-300 group flex flex-col">
 
                   <div class="h-56 bg-gray-200 relative overflow-hidden">
-                    <img
-                      [src]="room.images?.[0]?.url || 'https://images.unsplash.com/photo-1517502884422-41ea209c1b4e?auto=format&fit=crop&q=80&w=800'"
+                    <img [src]="room.images[0]?.url || 'https://images.unsplash.com/photo-1517502884422-41ea209c1b4e?auto=format&fit=crop&q=80&w=800'"
                       class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                     <span class="absolute top-4 left-4 bg-white/90 backdrop-blur text-gray-900 text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">
                       {{ room.category === 'MEETING' ? 'Réunion' : room.category === 'STUDIO' ? 'Studio' : 'Événement' }}

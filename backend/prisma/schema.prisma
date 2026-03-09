@@ -78,6 +78,10 @@ model User {
   // Relations
   reservations Reservation[]
 
+  // Réinitialisation de mot de passe
+  resetToken       String?
+  resetTokenExpiry DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
