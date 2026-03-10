@@ -1,13 +1,13 @@
 import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-auth-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="min-h-screen flex bg-white font-sans">
@@ -76,7 +76,7 @@ import { AuthService } from '../../core/auth/auth.service';
               <div>
                 <div class="flex justify-between mb-1">
                   <label class="block text-sm font-medium text-gray-700">Mot de passe</label>
-                  <a href="#" class="text-xs text-gray-500 hover:text-[#2b5e6e]">Oublié ?</a>
+                  <a routerLink="/forgot-password" class="text-xs text-gray-500 hover:text-[#2b5e6e]">Oublié ?</a>
                 </div>
                 <div class="relative">
                   <span class="absolute left-3 top-3 text-gray-400">🔒</span>
