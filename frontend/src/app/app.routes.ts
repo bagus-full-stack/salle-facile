@@ -9,6 +9,8 @@ import { UserDashboardPageComponent } from './features/user/user-dashboard-page.
 import { AdminFinancePageComponent } from './features/admin/admin-finance-page.component';
 import { AdminRoomEditPageComponent } from './features/admin/admin-room-edit-page.component';
 import { AdminAnalyticsPageComponent } from './features/admin/admin-analytics-page.component';
+import { AdminLayoutComponent } from './features/admin/admin-layout.component';
+import { AdminRoomsPageComponent } from './features/admin/admin-rooms-page.component';
 import {HomePageComponent} from './features/public/home-page.component';
 import { ForgotPasswordPageComponent } from './features/public/forgot-password-page.component';
 import { ResetPasswordPageComponent } from './features/public/reset-password-page.component';
@@ -52,20 +54,23 @@ export const routes: Routes = [
   },
 
   // ==========================================
-  // 🔴 ROUTES ADMIN (Nécessite le rôle Admin)
+  // 🔴 ROUTES ADMIN (Necessite le role Admin)
   // ==========================================
   {
     path: 'admin',
+    component: AdminLayoutComponent, // <-- Layout avec sidebar
     canActivate: [authGuard, adminGuard], // <-- Double protection !
     children: [
-      // Toutes les routes enfants hériteront de cette protection automatiquement
+      // Toutes les routes enfants heritent de cette protection automatiquement
+      { path: 'reservations', component: AdminReservationsPageComponent },
+      { path: 'salles', component: AdminRoomsPageComponent },
+      { path: 'salles/edition', component: AdminRoomEditPageComponent },
+      { path: 'salles/edition/:id', component: AdminRoomEditPageComponent },
       { path: 'finances', component: AdminFinancePageComponent },
       { path: 'analyses', component: AdminAnalyticsPageComponent },
-      { path: 'reservations', component: AdminReservationsPageComponent },
       { path: 'utilisateurs', component: AdminUsersPageComponent },
-      { path: 'salles/edition', component: AdminRoomEditPageComponent },
-      // Redirection par défaut du panel admin
-      { path: '', redirectTo: 'finances', pathMatch: 'full' }
+      // Redirection par defaut du panel admin
+      { path: '', redirectTo: 'reservations', pathMatch: 'full' }
     ]
   },
 

@@ -105,6 +105,47 @@ import { Room } from '../../core/services/room.service';
             </div>
           </section>
 
+          <!-- Promo Code Section -->
+          <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <h2 class="text-lg font-bold mb-4">Code de Reduction</h2>
+            <div class="flex gap-3">
+              <div class="relative flex-1">
+                <input 
+                  type="text" 
+                  [value]="promoCode()"
+                  (input)="updatePromoCode($event)"
+                  placeholder="Entrez votre code de reduction"
+                  class="w-full border rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                  [class.border-green-400]="promoDiscount() > 0"
+                  [class.border-red-400]="promoError()">
+                @if (promoDiscount() > 0) {
+                  <span class="absolute right-3 top-3 text-green-500">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                  </span>
+                }
+              </div>
+              <button 
+                (click)="applyPromoCode()" 
+                [disabled]="isValidatingPromo() || !promoCode()"
+                class="px-6 py-3 border border-gray-200 rounded-lg text-sm font-semibold hover:bg-gray-50 transition disabled:opacity-50">
+                {{ isValidatingPromo() ? 'Verification...' : 'Appliquer' }}
+              </button>
+            </div>
+            @if (promoMessage()) {
+              <p class="mt-2 text-sm text-green-600 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                {{ promoMessage() }}
+              </p>
+            }
+            @if (promoError()) {
+              <p class="mt-2 text-sm text-red-600">{{ promoError() }}</p>
+            }
+          </section>
+
           <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <h2 class="text-lg font-bold mb-4">Informations de Facturation</h2>
             <form [formGroup]="billingForm" class="space-y-3">
@@ -184,11 +225,17 @@ import { Room } from '../../core/services/room.service';
             <div class="border-b pb-4 mb-4 space-y-3 text-sm">
               <div class="flex justify-between">
                 <span class="text-gray-500">Sous-total</span>
-                <span class="font-medium">{{ subtotal() | number:'1.2-2' }} €</span>
+                <span class="font-medium">{{ subtotal() | number:'1.2-2' }} EUR</span>
               </div>
+              @if (promoDiscount() > 0) {
+                <div class="flex justify-between text-green-600">
+                  <span>Reduction</span>
+                  <span class="font-medium">-{{ discountAmount() | number:'1.2-2' }} EUR</span>
+                </div>
+              }
               <div class="flex justify-between">
                 <span class="text-gray-500">Taxes (20%)</span>
-                <span class="font-medium">{{ tax() | number:'1.2-2' }} €</span>
+                <span class="font-medium">{{ tax() | number:'1.2-2' }} EUR</span>
               </div>
             </div>
 
@@ -215,6 +262,13 @@ export class CheckoutFlowPageComponent {
   public paymentMethod = signal<'CREDIT_CARD' | 'ONSITE'>('CREDIT_CARD');
   public isSubmitting = signal(false);
   public errorMessage = signal<string | null>(null);
+  
+  // Promo code state
+  public promoCode = signal<string>('');
+  public promoDiscount = signal<number>(0);
+  public promoMessage = signal<string | null>(null);
+  public promoError = signal<string | null>(null);
+  public isValidatingPromo = signal(false);
 
   // Date/time form
   public dateForm = this.fb.group({
@@ -261,8 +315,47 @@ export class CheckoutFlowPageComponent {
     }
   });
 
-  public tax = computed(() => this.subtotal() * 0.20);
-  public total = computed(() => this.subtotal() + this.tax());
+  public discountAmount = computed(() => this.subtotal() * (this.promoDiscount() / 100));
+  public subtotalAfterDiscount = computed(() => this.subtotal() - this.discountAmount());
+  public tax = computed(() => this.subtotalAfterDiscount() * 0.20);
+  public total = computed(() => this.subtotalAfterDiscount() + this.tax());
+
+  updatePromoCode(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.promoCode.set(input.value.toUpperCase());
+    // Reset messages when typing
+    this.promoMessage.set(null);
+    this.promoError.set(null);
+  }
+
+  applyPromoCode() {
+    const code = this.promoCode().trim();
+    if (!code) return;
+
+    this.isValidatingPromo.set(true);
+    this.promoError.set(null);
+    this.promoMessage.set(null);
+
+    // Simulate API call - in production this would call the backend
+    setTimeout(() => {
+      // Mock promo codes for demo
+      const validCodes: Record<string, { discount: number; message: string }> = {
+        'BIENVENUE10': { discount: 10, message: 'Code BIENVENUE10 applique: -10% sur votre reservation!' },
+        'PROMO20': { discount: 20, message: 'Code PROMO20 applique: -20% sur votre reservation!' },
+        'VIP50': { discount: 50, message: 'Code VIP50 applique: -50% sur votre reservation!' },
+      };
+
+      const promo = validCodes[code];
+      if (promo) {
+        this.promoDiscount.set(promo.discount);
+        this.promoMessage.set(promo.message);
+      } else {
+        this.promoDiscount.set(0);
+        this.promoError.set('Code promo invalide ou expire.');
+      }
+      this.isValidatingPromo.set(false);
+    }, 800);
+  }
 
   submitReservation() {
     const r = this.room();
