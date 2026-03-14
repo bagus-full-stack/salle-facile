@@ -2,53 +2,32 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="65ae8793-3702-43a2-8a33-941d45b4c7e3" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/analytics/analytics.controller.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/analytics/analytics.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/auth/dto/auth.dto.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/auth/dto/login.dto.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/auth/dto/register.dto.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/auth/jwt-auth.guard.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/auth/jwt.strategy.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/billing/billing.controller.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/billing/billing.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/notifications/mail.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/notifications/reservation.listener.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/reservations/dto/create-reservation.dto.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/reservations/reservations.controller.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/reservations/reservations.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/rooms/dto/create-room.dto.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/rooms/rooms.controller.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/rooms/rooms.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/rooms/rooms.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/users/dto/update-user.dto.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/users/users.controller.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/users/users.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/modules/users/users.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/shared/prisma.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/shared/shared.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/templates/confirmation.hbs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/core/auth/admin.guard.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/core/auth/auth.guard.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/core/services/admin-reservations.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/core/services/admin-users.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/core/services/analytics.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/core/services/room.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/admin/admin-analytics-page.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/admin/admin-finance-page.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/admin/admin-reservations-page.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/admin/admin-room-edit-page.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/admin/admin-timeline-page.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/admin/admin-users-page.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/checkout/checkout-flow-page.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/checkout/checkout-success-page.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/public/reset-password-page.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/public/room-details-page.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/user/user-dashboard-page.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/shared/ui/availability-calendar-ui/availability-calendar-ui.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/shared/ui/room-details-ui/room-details-ui.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/angular.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/styles.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AGENTS.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/1/pg_internal.init" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/1/pg_internal.init" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1247" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1247" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1249" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1249" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1259" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1259" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17128" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17128" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17140" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17140" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17199" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17199" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17218" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17218" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17339" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17339" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2608" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2608" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2656" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2656" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2658" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2658" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2659" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2659" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2840" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2840" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/pg_internal.init" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/pg_internal.init" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/5/pg_internal.init" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/global/1262" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/global/1262" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/global/2671" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/global/2671" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/global/2672" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/global/2672" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/global/pg_control" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/global/pg_control" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/global/pg_internal.init" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/global/pg_internal.init" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/pg_wal/000000010000000000000004" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/pg_wal/000000010000000000000004" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/pg_xact/0000" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/pg_xact/0000" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/postmaster.pid" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/postmaster.pid" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,6 +38,9 @@
     <persistenceIdMap>
       <entry key="_C:/Users/homni/Documents/Projects/SalleFacile" value="3AemhfreL5HU2M7k3AhTcPh7NrG" />
     </persistenceIdMap>
+  </component>
+  <component name="CopilotUserSelectedChatMode">
+    <option name="chatModeId" value="Agent" />
   </component>
   <component name="CopilotUserSelectedModel">
     <selectedModels>
@@ -74,7 +56,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/frontend" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -95,8 +77,9 @@
     &quot;Node.js.main.ts.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
     &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;npm.backend.executor&quot;: &quot;Run&quot;,
@@ -107,7 +90,7 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="npm.frontend">
+  <component name="RunManager" selected="npm.backend">
     <configuration name="backend" type="js.build_tools.npm" temporary="true">
       <package-json value="$PROJECT_DIR$/backend/package.json" />
       <command value="run" />
@@ -134,8 +117,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.frontend" />
         <item itemvalue="npm.backend" />
+        <item itemvalue="npm.frontend" />
       </list>
     </recent_temporary>
   </component>
@@ -154,6 +137,8 @@
       <option name="presentableId" value="Default" />
       <updated>1772961534536</updated>
       <workItem from="1772961538261" duration="26717000" />
+      <workItem from="1773394998742" duration="18000" />
+      <workItem from="1773408407314" duration="9347000" />
     </task>
     <servers />
   </component>

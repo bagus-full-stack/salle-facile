@@ -3,6 +3,7 @@ import * as express from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto } from './dto/auth.dto';
 import {AuthGuard} from "@nestjs/passport";
+import { LinkedinAuthGuard } from './linkedin-auth.guard'; // 👈 Import new guard
 
 @Controller('auth')
 export class AuthController {
@@ -35,13 +36,13 @@ export class AuthController {
     }
 
     @Get('linkedin')
-    @UseGuards(AuthGuard('linkedin'))
+    @UseGuards(LinkedinAuthGuard) // 👈 Use new guard
     async linkedinAuth(@Req() req) {
         // Cette route redirige l'utilisateur vers la page de login LinkedIn
     }
 
     @Get('linkedin/callback')
-    @UseGuards(AuthGuard('linkedin'))
+    @UseGuards(LinkedinAuthGuard) // 👈 Use new guard
     async linkedinAuthRedirect(@Req() req, @Res() res: express.Response) {
         // LinkedIn nous renvoie ici. req.user contient le JWT généré par notre stratégie.
         const token = req.user.access_token;

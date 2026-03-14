@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { UserRole } from '../auth/auth.service';
 
 export interface AdminUser {
   id: string;
@@ -9,7 +10,7 @@ export interface AdminUser {
   email: string;
   accountType: 'INDIVIDUAL' | 'PROFESSIONAL';
   companyName: string | null;
-  role: 'SUPER_ADMIN' | 'MANAGER' | 'STAFF' | 'USER';
+  role: UserRole;
   isActive: boolean;
   createdAt: string;
   _count: { reservations: number };

@@ -7,6 +7,10 @@ import {EventEmitterModule} from "@nestjs/event-emitter";
 import {MailerModule} from "@nestjs-modules/mailer";
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import {UsersModule} from "./modules/users/users.module";
+import {AuthModule} from "./modules/auth/auth.module";
+import {ReservationsModule} from "./modules/reservations/reservations.module";
+import {BillingModule} from "./modules/billing/billing.module";
+import {AnalyticsModule} from "./modules/analytics/analytics.module";
 
 @Module({
   imports: [
@@ -32,6 +36,10 @@ import {UsersModule} from "./modules/users/users.module";
     SharedModule, // Le PrismaService est maintenant injecté globalement !
     RoomsModule,
     UsersModule,
+    AuthModule,
+    ReservationsModule,
+    BillingModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { RoomService } from '../../core/services/room.service';
@@ -8,6 +8,7 @@ import { RoomDetailsUiComponent } from '../../shared/ui/room-details-ui/room-det
   selector: 'app-room-details-page',
   standalone: true,
   imports: [CommonModule, RoomDetailsUiComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (roomService.isLoading()) {
       <div class="flex justify-center items-center h-screen text-gray-500">

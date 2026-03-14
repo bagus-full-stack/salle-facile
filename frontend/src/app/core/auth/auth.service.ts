@@ -4,7 +4,15 @@ import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 
-export interface User { id: string; firstName: string; lastName: string; email: string; role: string; }
+export type UserRole = 'SUPER_ADMIN' | 'MANAGER' | 'STAFF' | 'USER';
+
+export interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: UserRole;
+}
 export interface AuthResponse { access_token: string; user: User; }
 
 @Injectable({ providedIn: 'root' })
@@ -69,7 +77,20 @@ export class AuthService {
 
     // 3. On met à jour le Signal pour débloquer l'interface
     if (decodedUser) {
-      this.currentUser.set(decodedUser);
+      // Adapter le format du JWT vers notre interface User
+      // Le payload JWT standard utilise 'sub' pour l'ID
+      const user: User = {
+        id: decodedUser.sub || decodedUser.id,
+        firstName: decodedUser.firstName,
+        lastName: decodedUser.lastName,
+        email: decodedUser.email,
+        role: decodedUser.role as UserRole
+      };
+
+      if (isPlatformBrowser(this.platformId)) {
+        localStorage.setItem('user', JSON.stringify(user));
+      }
+      this.currentUser.set(user);
     }
   }
 

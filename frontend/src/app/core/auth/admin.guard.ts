@@ -1,16 +1,17 @@
 import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
-import { AuthService } from './auth.service';
+import { AuthService, UserRole } from './auth.service';
 
 export const adminGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
   const user = authService.currentUser();
+  const allowedRoles: UserRole[] = ['SUPER_ADMIN', 'MANAGER', 'STAFF'];
 
   // On vérifie si l'utilisateur existe ET si son rôle fait partie des rôles administratifs
   // (Basé sur notre schéma Prisma : SUPER_ADMIN, MANAGER, STAFF)
-  if (user && ['SUPER_ADMIN', 'MANAGER', 'STAFF'].includes(user.role)) {
+  if (user && allowedRoles.includes(user.role)) {
     return true; // Accès autorisé au Back-Office !
   }
 

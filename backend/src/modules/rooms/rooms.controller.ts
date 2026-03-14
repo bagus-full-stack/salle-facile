@@ -1,28 +1,58 @@
-import {Body, Controller, Get, Param, ParseUUIDPipe, Post, Query, UploadedFiles, UseInterceptors} from '@nestjs/common';
+import {
+    Controller, Get, Post, Patch, Param, Body, Query,
+    UseInterceptors, UploadedFiles, ParseUUIDPipe, UseGuards
+} from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 import { RoomsService } from './rooms.service';
-import {FilesInterceptor} from "@nestjs/platform-express";
-import {CreateRoomDto} from "./dto/create-room.dto";
-import {RoomCategory} from "@prisma/client";
+import { RoomCategory, Role } from '@prisma/client';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
+
+// Configuration pour sauvegarder les images sur le disque dur
+const multerOptions = {
+    storage: diskStorage({
+        destination: './uploads/rooms',
+        filename: (req, file, callback) => {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+            const ext = extname(file.originalname);
+            callback(null, `room-${uniqueSuffix}${ext}`);
+        }
+    }),
+    fileFilter: (req, file, callback) => {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
+            return callback(new Error('Seules les images sont autorisées'), false);
+        }
+        callback(null, true);
+    }
+};
 
 @Controller('rooms')
 export class RoomsController {
     constructor(private readonly roomsService: RoomsService) {}
 
-    // ⚡️ LA ROUTE DE RECHERCHE : GET /rooms?category=MEETING&minCapacity=10
+    // ==========================================
+    // 🔍 ROUTES PUBLIQUES (Catalogue & Recherche)
+    // ==========================================
+
     @Get()
     async getRooms(
         @Query('category') category?: RoomCategory,
-        @Query('minCapacity') minCapacity?: number,
+        @Query('minCapacity') minCapacity?: string,
+        @Query('search') search?: string // 👈 Le nouveau paramètre de la barre de recherche
     ) {
-        return this.roomsService.findAll(category, minCapacity);
+        return this.roomsService.findAll(category, minCapacity, search);
     }
 
-    // Utilisation de ParseUUIDPipe (fourni par NestJS) qui agit comme validateur
     @Get(':id')
     async getRoomDetails(@Param('id', ParseUUIDPipe) id: string) {
-        return this.roomsService.getRoomById(id);
+        // Note: Assure-toi que ta méthode s'appelle bien findOne ou getRoomById dans ton service
+        return this.roomsService.findOne(id);
     }
 
+    // ⚡️ LA ROUTE SAUVÉE : Indispensable pour le tunnel de réservation
     @Get(':id/availability')
     async getAvailability(
         @Param('id', ParseUUIDPipe) id: string,
@@ -32,12 +62,30 @@ export class RoomsController {
         return this.roomsService.getRoomAvailability(id, new Date(start), new Date(end));
     }
 
+    // ==========================================
+    // 👑 ROUTES ADMIN (Création & Édition)
+    // ==========================================
+
     @Post()
-    @UseInterceptors(FilesInterceptor('images', 5)) // Limite à 5 fichiers max
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.SUPER_ADMIN, Role.MANAGER)
+    @UseInterceptors(FilesInterceptor('images', 10, multerOptions))
     async create(
-        @Body() createRoomDto: CreateRoomDto,
-        @UploadedFiles() files: Express.Multer.File[],
+        @Body() dto: any, // 'any' car FormData envoie tout sous forme de string
+        @UploadedFiles() files: Array<Express.Multer.File>
     ) {
-        return this.roomsService.createRoom(createRoomDto, files);
+        return this.roomsService.createRoom(dto, files);
+    }
+
+    @Patch(':id')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.SUPER_ADMIN, Role.MANAGER)
+    @UseInterceptors(FilesInterceptor('images', 10, multerOptions))
+    async updateRoom(
+        @Param('id', ParseUUIDPipe) id: string,
+        @Body() dto: any,
+        @UploadedFiles() files?: Array<Express.Multer.File>
+    ) {
+        return this.roomsService.updateRoom(id, dto, files);
     }
 }

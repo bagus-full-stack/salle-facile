@@ -17,56 +17,59 @@ import { adminGuard } from './core/auth/admin.guard';
 import {AdminReservationsPageComponent} from './features/admin/admin-reservations-page.component';
 import {AdminUsersPageComponent} from './features/admin/admin-users-page.component';
 import {OAuthCallbackComponent} from './features/public/oauth-callback.component';
+import {AdminRoomsPageComponent} from './features/admin/admin-rooms-page.component';
+import {AdminTimelinePageComponent} from './features/admin/admin-timeline-page.component';
+import {MainLayoutComponent} from './shared/ui/layout/main-layout/main-layout.component';
 
 export const routes: Routes = [
-  { path: '', component: HomePageComponent },
-
-  // ==========================================
-  // 🟢 ROUTES PUBLIQUES (Libre accès)
-  // ==========================================
-  { path: 'login', component: AuthPageComponent },
-  { path: 'salles/:id', component: RoomDetailsPageComponent },
-  { path: 'oauth/callback', component: OAuthCallbackComponent },
-
-  // ==========================================
-  // 🟡 ROUTES UTILISATEURS (Nécessite d'être connecté)
-  // ==========================================
+  // 1. Layout par défaut (avec Header + Footer)
   {
-    path: 'checkout',
-    component: CheckoutFlowPageComponent,
-    canActivate: [authGuard] // <-- Bloqué si non connecté
-  },
-  {
-    path: 'checkout/success',
-    component: CheckoutSuccessPageComponent,
-    canActivate: [authGuard]
-  },
-  {
-    path: 'mon-espace',
-    component: UserDashboardPageComponent,
-    canActivate: [authGuard]
-  },
-
-  // ==========================================
-  // 🔴 ROUTES ADMIN (Nécessite le rôle Admin)
-  // ==========================================
-  {
-    path: 'admin',
-    canActivate: [authGuard, adminGuard], // <-- Double protection !
+    path: '',
+    component: MainLayoutComponent,
     children: [
-      // Toutes les routes enfants hériteront de cette protection automatiquement
-      { path: 'finances', component: AdminFinancePageComponent },
-      { path: 'analyses', component: AdminAnalyticsPageComponent },
-      { path: 'reservations', component: AdminReservationsPageComponent },
-      { path: 'utilisateurs', component: AdminUsersPageComponent },
-      { path: 'salles/edition', component: AdminRoomEditPageComponent },
-      // Redirection par défaut du panel admin
-      { path: '', redirectTo: 'finances', pathMatch: 'full' }
+      { path: '', component: HomePageComponent },
+
+      // 🟢 ROUTES PUBLIQUES
+      { path: 'salles/:id', component: RoomDetailsPageComponent },
+      { path: 'oauth/callback', component: OAuthCallbackComponent },
+
+      // 🟡 ROUTES UTILISATEURS
+      {
+        path: 'checkout',
+        component: CheckoutFlowPageComponent,
+        canActivate: [authGuard]
+      },
+      {
+        path: 'checkout/success',
+        component: CheckoutSuccessPageComponent,
+        canActivate: [authGuard]
+      },
+      {
+        path: 'mon-espace',
+        component: UserDashboardPageComponent,
+        canActivate: [authGuard]
+      },
+
+      // 🔴 ROUTES ADMIN
+      {
+        path: 'admin',
+        canActivate: [authGuard, adminGuard],
+        children: [
+          { path: 'finances', component: AdminFinancePageComponent },
+          { path: 'analyses', component: AdminAnalyticsPageComponent },
+          { path: 'reservations', component: AdminReservationsPageComponent },
+          { path: 'utilisateurs', component: AdminUsersPageComponent },
+          { path: 'salles', component: AdminRoomsPageComponent },
+          { path: 'planning', component: AdminTimelinePageComponent },
+          { path: '', redirectTo: 'finances', pathMatch: 'full' }
+        ]
+      }
     ]
   },
 
-  // ==========================================
-  // 🌌 FALLBACK (Redirection si la route n'existe pas)
-  // ==========================================
+  // 2. Routes sans Layout (Plein écran, Login, etc.)
+  { path: 'login', component: AuthPageComponent },
+
+  // 3. Fallback
   { path: '**', redirectTo: 'login' }
 ];

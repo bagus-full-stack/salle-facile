@@ -2,6 +2,9 @@ import {Controller, Post, Get, Patch, Param, Body, ParseUUIDPipe, UseGuards, Req
 import { ReservationsService } from './reservations.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
+import { Role } from '@prisma/client';
 
 @Controller('reservations')
 export class ReservationsController {
@@ -38,16 +41,22 @@ export class ReservationsController {
     // Note: Idéalement à protéger avec un @UseGuards(JwtAuthGuard, AdminGuard)
 
     @Get('admin/all')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.SUPER_ADMIN, Role.MANAGER, Role.STAFF)
     async getAllForAdmin() {
         return this.reservationsService.getAllReservationsForAdmin();
     }
 
     @Patch('admin/:id/force-cancel')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.SUPER_ADMIN, Role.MANAGER)
     async forceCancel(@Param('id', ParseUUIDPipe) reservationId: string) {
         return this.reservationsService.adminForceCancel(reservationId);
     }
 
     @Get('admin/timeline')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.SUPER_ADMIN, Role.MANAGER, Role.STAFF)
     async getTimeline(@Query('date') date: string) {
         // Si aucune date n'est fournie, on prend aujourd'hui
         const targetDate = date ? date : new Date().toISOString();
