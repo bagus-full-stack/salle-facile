@@ -57,9 +57,22 @@ import { AuthService } from '../../core/auth/auth.service';
               class="flex-1 py-2 text-sm text-gray-500 rounded-lg transition-all">Création de compte</button>
           </div>
 
+          @if (mode() === 'FORGOT_PASSWORD') {
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-6 text-center">
+              <p class="text-sm text-blue-700 font-medium">Réinitialisation de mot de passe</p>
+              <p class="text-xs text-blue-600">Entrez votre email pour recevoir un lien de réinitialisation</p>
+            </div>
+          }
+
           @if (errorMessage()) {
             <div class="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm font-medium text-center border border-red-100">
               {{ errorMessage() }}
+            </div>
+          }
+
+          @if (successMessage()) {
+            <div class="bg-green-50 text-green-600 p-3 rounded-lg mb-4 text-sm font-medium text-center border border-green-100">
+              {{ successMessage() }}
             </div>
           }
 
@@ -74,10 +87,7 @@ import { AuthService } from '../../core/auth/auth.service';
               </div>
 
               <div>
-                <div class="flex justify-between mb-1">
-                  <label class="block text-sm font-medium text-gray-700">Mot de passe</label>
-                  <a href="#" class="text-xs text-gray-500 hover:text-[#2b5e6e]">Oublié ?</a>
-                </div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
                 <div class="relative">
                   <span class="absolute left-3 top-3 text-gray-400">🔒</span>
                   <input [type]="showPassword() ? 'text' : 'password'" formControlName="password" placeholder="••••••••" class="w-full bg-gray-50 border border-gray-100 rounded-lg py-3 pl-10 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#2b5e6e]">
@@ -87,13 +97,38 @@ import { AuthService } from '../../core/auth/auth.service';
                 </div>
               </div>
 
-              <div class="flex items-center">
-                <input type="checkbox" class="h-4 w-4 text-[#2b5e6e] focus:ring-[#2b5e6e] border-gray-300 rounded">
-                <label class="ml-2 block text-sm text-gray-500">Se souvenir de moi</label>
+              <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                  <input type="checkbox" class="h-4 w-4 text-[#2b5e6e] focus:ring-[#2b5e6e] border-gray-300 rounded">
+                  <label class="ml-2 block text-sm text-gray-500">Se souvenir de moi</label>
+                </div>
+                <button type="button" (click)="mode.set('FORGOT_PASSWORD')" class="text-xs text-[#2b5e6e] font-semibold hover:text-[#1f4551] hover:underline transition duration-200">Mot de passe oublié ?</button>
               </div>
 
               <button type="submit" [disabled]="loginForm.invalid || isLoading()" class="w-full bg-[#2b5e6e] hover:bg-[#1f4551] text-white font-bold py-3.5 rounded-lg transition disabled:opacity-50 flex justify-center">
                 {{ isLoading() ? 'Connexion en cours...' : 'Se connecter →' }}
+              </button>
+            </form>
+          }
+
+          @if (mode() === 'FORGOT_PASSWORD') {
+            <form [formGroup]="forgotPasswordForm" (ngSubmit)="onForgotPassword()" class="space-y-5">
+              <p class="text-sm text-gray-600 mb-5">Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.</p>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Adresse email</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-3 text-gray-400">✉️</span>
+                  <input type="email" formControlName="email" placeholder="vous@exemple.com" class="w-full bg-gray-50 border border-gray-100 rounded-lg py-3 pl-10 pr-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#2b5e6e]">
+                </div>
+              </div>
+
+              <button type="submit" [disabled]="forgotPasswordForm.invalid || isLoading()" class="w-full bg-[#2b5e6e] hover:bg-[#1f4551] text-white font-bold py-3.5 rounded-lg transition disabled:opacity-50">
+                {{ isLoading() ? 'Envoi en cours...' : 'Envoyer le lien →' }}
+              </button>
+
+              <button type="button" (click)="mode.set('LOGIN')" class="w-full text-center text-sm text-gray-600 hover:text-gray-900 transition">
+                ← Retour à la connexion
               </button>
             </form>
           }
@@ -196,10 +231,11 @@ export class AuthPageComponent {
   private route = inject(ActivatedRoute);
 
   // Signaux d'état
-  public mode = signal<'LOGIN' | 'REGISTER'>('LOGIN');
+  public mode = signal<'LOGIN' | 'REGISTER' | 'FORGOT_PASSWORD'>('LOGIN');
   public isLoading = signal(false);
   public showPassword = signal(false);
   public errorMessage = signal<string | null>(null);
+  public successMessage = signal<string | null>(null);
 
   // Formulaire de Connexion
   public loginForm = this.fb.group({
@@ -216,6 +252,11 @@ export class AuthPageComponent {
     password: ['', [Validators.required, Validators.minLength(8)]],
     companyName: [''],
     siret: ['']
+  });
+
+  // Formulaire Mot de Passe Oublié
+  public forgotPasswordForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]]
   });
 
   setAccountType(type: 'INDIVIDUAL' | 'PROFESSIONAL') {
@@ -246,10 +287,6 @@ export class AuthPageComponent {
           const targetRoute = res.user.role === 'USER' ? '/mon-espace' : '/admin';
           this.router.navigate([targetRoute]);
         }
-
-        // Redirection conditionnelle basée sur le rôle
-        // const targetRoute = res.user.role === 'USER' ? '/mon-espace' : '/admin';
-        // this.router.navigate([targetRoute]);
       },
       error: (err) => {
         this.isLoading.set(false);
@@ -271,6 +308,32 @@ export class AuthPageComponent {
       error: (err) => {
         this.isLoading.set(false);
         this.errorMessage.set(err.error.message || "Erreur lors de l'inscription.");
+      }
+    });
+  }
+
+  onForgotPassword() {
+    if (this.forgotPasswordForm.invalid) return;
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
+
+    const email = this.forgotPasswordForm.get('email')?.value || '';
+
+    this.authService.forgotPassword(email).subscribe({
+      next: () => {
+        this.isLoading.set(false);
+        this.successMessage.set('Un email avec le lien de réinitialisation a été envoyé. Vérifiez votre inbox (et le spam).');
+        this.forgotPasswordForm.reset();
+        // Optionnel: Redirection automatique après quelques secondes
+        setTimeout(() => {
+          this.mode.set('LOGIN');
+          this.successMessage.set(null);
+        }, 5000);
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        this.errorMessage.set(err.error.message || "Erreur lors de l'envoi du lien de réinitialisation.");
       }
     });
   }

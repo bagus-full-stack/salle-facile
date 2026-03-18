@@ -45,6 +45,14 @@ export class AuthService {
     );
   }
 
+  forgotPassword(email: string) {
+    return this.http.post<any>(`${this.apiUrl}/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string) {
+    return this.http.patch<any>(`${this.apiUrl}/reset-password`, { token, newPassword });
+  }
+
   logout() {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('access_token');

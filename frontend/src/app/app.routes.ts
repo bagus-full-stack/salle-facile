@@ -20,6 +20,11 @@ import {OAuthCallbackComponent} from './features/public/oauth-callback.component
 import {AdminRoomsPageComponent} from './features/admin/admin-rooms-page.component';
 import {AdminTimelinePageComponent} from './features/admin/admin-timeline-page.component';
 import {MainLayoutComponent} from './shared/ui/layout/main-layout/main-layout.component';
+import {ResetPasswordPageComponent} from './features/public/reset-password-page.component';
+import {RoomsListPageComponent} from './features/public/rooms-list-page.component';
+import {AdminDashboardPageComponent} from './features/admin/admin-dashboard-page.component';
+import {AdminSettingsPageComponent} from './features/admin/admin-settings-page.component';
+import {AdminLayoutComponent} from './features/admin/admin-layout.component';
 
 export const routes: Routes = [
   // 1. Layout par défaut (avec Header + Footer)
@@ -30,6 +35,7 @@ export const routes: Routes = [
       { path: '', component: HomePageComponent },
 
       // 🟢 ROUTES PUBLIQUES
+      // { path: 'salles', component: RoomsListPageComponent },
       { path: 'salles/:id', component: RoomDetailsPageComponent },
       { path: 'oauth/callback', component: OAuthCallbackComponent },
 
@@ -50,26 +56,40 @@ export const routes: Routes = [
         canActivate: [authGuard]
       },
 
-      // 🔴 ROUTES ADMIN
-      {
-        path: 'admin',
-        canActivate: [authGuard, adminGuard],
-        children: [
-          { path: 'finances', component: AdminFinancePageComponent },
-          { path: 'analyses', component: AdminAnalyticsPageComponent },
-          { path: 'reservations', component: AdminReservationsPageComponent },
-          { path: 'utilisateurs', component: AdminUsersPageComponent },
-          { path: 'salles', component: AdminRoomsPageComponent },
-          { path: 'planning', component: AdminTimelinePageComponent },
-          { path: '', redirectTo: 'finances', pathMatch: 'full' }
-        ]
-      }
+
     ]
   },
 
-  // 2. Routes sans Layout (Plein écran, Login, etc.)
+  // 2. Layout ADMIN (NOUVEAU)
+  {
+    path: 'admin',
+    component: AdminLayoutComponent,
+    canActivate: [authGuard, adminGuard],
+    children: [
+      { path: 'dashboard', component: AdminDashboardPageComponent, title: 'Tableau de bord' },
+
+      { path: 'salles', component: AdminRoomsPageComponent, title: 'Gestion des Salles' },
+      { path: 'salles/edition/:id', component: AdminRoomEditPageComponent },
+      { path: 'salles/nouveau', component: AdminRoomEditPageComponent },
+
+      { path: 'utilisateurs', component: AdminUsersPageComponent, title: 'Utilisateurs & Rôles' },
+
+      { path: 'finances', component: AdminFinancePageComponent, title: 'Finances' },
+      { path: 'analyses', component: AdminAnalyticsPageComponent, title: 'Analyses' },
+
+      { path: 'reservations', component: AdminReservationsPageComponent },
+      { path: 'planning', component: AdminTimelinePageComponent },
+
+      { path: 'parametres', component: AdminSettingsPageComponent, title: 'Paramètres' },
+
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+    ]
+  },
+
+  // 3. Routes sans Layout (Plein écran, Login, etc.)
   { path: 'login', component: AuthPageComponent },
+  { path: 'reset-password', component: ResetPasswordPageComponent },
 
   // 3. Fallback
-  { path: '**', redirectTo: 'login' }
+  { path: '**', redirectTo: '' }
 ];

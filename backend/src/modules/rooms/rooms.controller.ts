@@ -1,6 +1,6 @@
 import {
     Controller, Get, Post, Patch, Param, Body, Query,
-    UseInterceptors, UploadedFiles, ParseUUIDPipe, UseGuards
+    UseInterceptors, UploadedFiles, ParseUUIDPipe, UseGuards, Req
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -46,6 +46,12 @@ export class RoomsController {
         return this.roomsService.findAll(category, minCapacity, search);
     }
 
+    // GET all equipments for the admin panel (MUST be before :id route)
+    @Get('admin/equipments')
+    async getEquipments() {
+        return this.roomsService.getEquipments();
+    }
+
     @Get(':id')
     async getRoomDetails(@Param('id', ParseUUIDPipe) id: string) {
         // Note: Assure-toi que ta méthode s'appelle bien findOne ou getRoomById dans ton service
@@ -61,6 +67,7 @@ export class RoomsController {
     ) {
         return this.roomsService.getRoomAvailability(id, new Date(start), new Date(end));
     }
+
 
     // ==========================================
     // 👑 ROUTES ADMIN (Création & Édition)
@@ -84,8 +91,12 @@ export class RoomsController {
     async updateRoom(
         @Param('id', ParseUUIDPipe) id: string,
         @Body() dto: any,
-        @UploadedFiles() files?: Array<Express.Multer.File>
+        @UploadedFiles() files?: Array<Express.Multer.File>,
+        @Req() req?: any
     ) {
+        console.log(`[UPDATE Room ${id}] Headers:`, req?.headers);
+        console.log(`[UPDATE Room ${id}] DTO:`, JSON.stringify(dto));
+        console.log(`[UPDATE Room ${id}] Files:`, files?.length);
         return this.roomsService.updateRoom(id, dto, files);
     }
 }

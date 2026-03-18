@@ -1,7 +1,7 @@
-import {Controller, Post, Body, UseGuards, Get, Req, Res} from '@nestjs/common';
+import {Controller, Post, Body, UseGuards, Get, Req, Res, Patch} from '@nestjs/common';
 import * as express from 'express';
 import { AuthService } from './auth.service';
-import { LoginDto, RegisterDto } from './dto/auth.dto';
+import { LoginDto, RegisterDto, ForgotPasswordDto, ResetPasswordDto } from './dto/auth.dto';
 import {AuthGuard} from "@nestjs/passport";
 import { LinkedinAuthGuard } from './linkedin-auth.guard'; // 👈 Import new guard
 
@@ -17,6 +17,16 @@ export class AuthController {
     @Post('login')
     async login(@Body() dto: LoginDto) {
         return this.authService.login(dto);
+    }
+
+    @Post('forgot-password')
+    async forgotPassword(@Body() dto: ForgotPasswordDto) {
+        return this.authService.forgotPassword(dto.email);
+    }
+
+    @Patch('reset-password')
+    async resetPassword(@Body() dto: ResetPasswordDto) {
+        return this.authService.resetPassword(dto.token, dto.newPassword);
     }
 
     @Get('google')

@@ -26,6 +26,35 @@ export class RoomService {
   public roomsList = signal<Room[]>([]);
   public isListLoading = signal<boolean>(false);
 
+  // Méthodes CRUD Admin
+  createRoom(roomData: FormData) {
+    return this.http.post<Room>(this.apiUrl, roomData);
+  }
+
+  updateRoom(id: string, roomData: FormData) {
+    return this.http.patch<Room>(`${this.apiUrl}/${id}`, roomData);
+  }
+
+  deleteRoom(id: string) {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  // Gestion des images
+  uploadRoomImage(roomId: string, file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ url: string }>(`${this.apiUrl}/${roomId}/images`, formData);
+  }
+
+  deleteRoomImage(imageId: string) {
+    return this.http.delete<void>(`${this.apiUrl}/images/${imageId}`);
+  }
+
+  // Récupération des équipements
+  getEquipments() {
+    return this.http.get<{ id: string; name: string; iconRef: string }[]>(`${this.apiUrl}/admin/equipments`);
+  }
+
   loadRoomDetails(id: string) {
     this.isLoading.set(true);
     this.error.set(null);

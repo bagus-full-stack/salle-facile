@@ -62,6 +62,17 @@ export class RoomsService {
         };
     }
 
+    // Get all available equipments
+    async getEquipments() {
+        return this.prisma.equipment.findMany({
+            select: {
+                id: true,
+                name: true,
+                iconRef: true
+            }
+        });
+    }
+
     // ==========================================
     // ✍️ ÉCRITURE & GESTION DES FICHIERS (Admin)
     // ==========================================
@@ -71,13 +82,43 @@ export class RoomsService {
             name: dto.name,
             description: dto.description,
             capacity: Number(dto.capacity),
-            surfaceArea: Number(dto.surfaceArea), // 👈 AJOUT ICI
+            surfaceArea: Number(dto.surfaceArea),
             category: dto.category,
             hourlyPrice: Number(dto.hourlyPrice),
-            halfDayPrice: Number(dto.halfDayPrice), // 👈 AJOUT ICI
+            halfDayPrice: dto.halfDayPrice ? Number(dto.halfDayPrice) : 0,
             fullDayPrice: Number(dto.fullDayPrice),
             isActive: dto.isActive === 'true' || dto.isActive === true,
         };
+
+        // Gestion des équipements
+        let equipmentIds: string[] = [];
+        if (dto.equipments) {
+            // Normalise en tableau si c'est une string unique ou JSON
+            if (typeof dto.equipments === 'string') {
+                 try {
+                     // Cas où c'est un JSON stringifié "[id1, id2]"
+                     if (dto.equipments.startsWith('[')) {
+                         equipmentIds = JSON.parse(dto.equipments);
+                     } else {
+                         equipmentIds = [dto.equipments];
+                     }
+                 } catch (e) {
+                     equipmentIds = [dto.equipments];
+                 }
+            } else if (Array.isArray(dto.equipments)) {
+                equipmentIds = dto.equipments;
+            }
+        }
+
+        // Vérifier que les équipements existent avant de les connecter
+        let validEquipmentIds: string[] = [];
+        if (equipmentIds.length > 0) {
+            const existingEquipments = await this.prisma.equipment.findMany({
+                where: { id: { in: equipmentIds } },
+                select: { id: true }
+            });
+            validEquipmentIds = existingEquipments.map(e => e.id);
+        }
 
         // 2. Formatage des images
         const imagesData = this.formatImagesData(files);
@@ -86,9 +127,12 @@ export class RoomsService {
         return this.prisma.room.create({
             data: {
                 ...roomData,
-                images: imagesData.length > 0 ? { create: imagesData } : undefined
+                images: imagesData.length > 0 ? { create: imagesData } : undefined,
+                equipments: validEquipmentIds.length > 0 ? { 
+                    connect: validEquipmentIds.map(id => ({ id })) 
+                } : undefined
             },
-            include: { images: true }
+            include: { images: true, equipments: true }
         });
     }
 
@@ -101,26 +145,59 @@ export class RoomsService {
         if (dto.name !== undefined) updateData.name = dto.name;
         if (dto.description !== undefined) updateData.description = dto.description;
         if (dto.capacity !== undefined) updateData.capacity = Number(dto.capacity);
+        if (dto.surfaceArea !== undefined) updateData.surfaceArea = Number(dto.surfaceArea);
         if (dto.category !== undefined) updateData.category = dto.category;
+        
         if (dto.hourlyPrice !== undefined) updateData.hourlyPrice = Number(dto.hourlyPrice);
+        if (dto.halfDayPrice !== undefined) updateData.halfDayPrice = Number(dto.halfDayPrice);
         if (dto.fullDayPrice !== undefined) updateData.fullDayPrice = Number(dto.fullDayPrice);
 
         if (dto.isActive !== undefined) {
             updateData.isActive = dto.isActive === 'true' || dto.isActive === true;
         }
 
+        // Gestion des équipements (mise à jour complète de la liste)
+        if (dto.equipments !== undefined) {
+             let equipmentIds: string[] = [];
+             if (typeof dto.equipments === 'string') {
+                 try {
+                     if (dto.equipments.startsWith('[')) {
+                         equipmentIds = JSON.parse(dto.equipments);
+                     } else if (dto.equipments === "") {
+                         equipmentIds = [];
+                     } else {
+                         equipmentIds = [dto.equipments];
+                     }
+                 } catch (e) {
+                     equipmentIds = [dto.equipments];
+                 }
+            } else if (Array.isArray(dto.equipments)) {
+                equipmentIds = dto.equipments;
+            } else if (dto.equipments === null) {
+                equipmentIds = [];
+            }
+            
+            // On utilise 'set' pour remplacer la sélection actuelle par la nouvelle
+            updateData.equipments = { set: equipmentIds.map(id => ({ id })) };
+        }
+
         // 2. Formatage des nouvelles images éventuelles
         const imagesData = this.formatImagesData(files);
 
         // 3. Mise à jour transactionnelle
+        const dataToUpdate: any = {
+            ...updateData
+        };
+
+        // Ajoute les images seulement s'il y en a de nouvelles
+        if (imagesData.length > 0) {
+            dataToUpdate.images = { create: imagesData };
+        }
+
         return this.prisma.room.update({
             where: { id },
-            data: {
-                ...updateData,
-                // Ajoute les nouvelles images aux anciennes
-                images: imagesData.length > 0 ? { create: imagesData } : undefined
-            },
-            include: { images: true }
+            data: dataToUpdate,
+            include: { images: true, equipments: true }
         });
     }
 
@@ -132,7 +209,7 @@ export class RoomsService {
         if (!files || files.length === 0) return [];
 
         return files.map((file, index) => ({
-            url: `http://localhost:3000/uploads/rooms/${file.filename}`,
+            url: `/uploads/rooms/${file.filename}`,
             isPrimary: index === 0 // La première image de l'upload devient la principale
         }));
     }

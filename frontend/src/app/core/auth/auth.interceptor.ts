@@ -10,6 +10,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
     // Si on a un token et que la requête va vers notre API, on l'attache
     if (token && req.url.includes('localhost:3000')) {
+      console.log('Adding specific auth token to request:', req.url);
       const clonedReq = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`

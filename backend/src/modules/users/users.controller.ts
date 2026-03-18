@@ -1,6 +1,7 @@
-import { Controller, Get, Patch, Param, Body, ParseUUIDPipe, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Patch, Param, Body, ParseUUIDPipe, UseGuards, Req, Delete, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateRoleDto } from './dto/update-user.dto';
+import { UpdateRoleDto, UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto'; // Import CreateUserDto
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -18,6 +19,23 @@ export class UsersController {
         return this.usersService.getAllUsers();
     }
 
+    @Post()
+    @Roles(Role.SUPER_ADMIN)
+    async createUser(@Body() dto: CreateUserDto) {
+        return this.usersService.createUser(dto);
+    }
+
+    @Patch(':id')
+    @Roles(Role.SUPER_ADMIN, Role.MANAGER)
+    async updateUser(
+        @Param('id', ParseUUIDPipe) targetUserId: string,
+        @Body() dto: UpdateUserDto,
+        @Req() req
+    ) {
+        const adminId = req.user.sub || req.user.id;
+        return this.usersService.updateUser(adminId, targetUserId, dto);
+    }
+    
     @Patch(':id/role')
     @Roles(Role.SUPER_ADMIN)
     async updateRole(
@@ -34,5 +52,12 @@ export class UsersController {
     async toggleStatus(@Param('id', ParseUUIDPipe) targetUserId: string, @Req() req) {
         const adminId = req.user.sub || req.user.id;
         return this.usersService.toggleUserStatus(adminId, targetUserId);
+    }
+
+    @Delete(':id')
+    @Roles(Role.SUPER_ADMIN)
+    async deleteUser(@Param('id', ParseUUIDPipe) targetUserId: string, @Req() req) {
+        const adminId = req.user.sub || req.user.id;
+        return this.usersService.deleteUser(adminId, targetUserId);
     }
 }

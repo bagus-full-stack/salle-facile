@@ -45,4 +45,22 @@ export class MailService {
             this.logger.error(`Erreur d'envoi d'email d'annulation`, error);
         }
     }
+
+    async sendPasswordResetLink(user: any, token: string) {
+        const resetLink = `http://localhost:4200/reset-password?token=${token}`;
+        try {
+            await this.mailerService.sendMail({
+                to: user.email,
+                subject: `Réinitialisation de votre mot de passe 🔒`,
+                template: './reset-password', // Créez ce template .hbs
+                context: {
+                    firstName: user.firstName,
+                    resetLink: resetLink,
+                },
+            });
+            this.logger.log(`Email de réinitialisation envoyé à ${user.email}`);
+        } catch (error) {
+            this.logger.error(`Erreur lors de l'envoi de l'email de réinitialisation`, error);
+        }
+    }
 }
