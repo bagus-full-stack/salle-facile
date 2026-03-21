@@ -53,7 +53,7 @@ interface DayAvailability {
             <input
               type="date"
               [(ngModel)]="customStart"
-              (change)="onCustomRangeChange()"
+              (change)="onStartChange()"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500"
             >
           </div>
@@ -62,7 +62,7 @@ interface DayAvailability {
             <input
               type="time"
               [(ngModel)]="customStartTime"
-              (change)="onCustomRangeChange()"
+              (change)="onStartChange()"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500"
             >
           </div>
@@ -71,7 +71,8 @@ interface DayAvailability {
             <input
               type="date"
               [(ngModel)]="customEnd"
-              (change)="onCustomRangeChange()"
+              [min]="endDateMin()"
+              (change)="onEndChange()"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500"
             >
           </div>
@@ -80,7 +81,8 @@ interface DayAvailability {
             <input
               type="time"
               [(ngModel)]="customEndTime"
-              (change)="onCustomRangeChange()"
+              [min]="endTimeMin()"
+              (change)="onEndChange()"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500"
             >
           </div>
@@ -250,6 +252,10 @@ export class RoomAvailabilityCalendarComponent implements OnInit {
   public customEndTime = signal<string>('17:00');
   public customRangeError = signal<string>('');
   public customRangeConflict = signal(false);
+  public endDateMin = computed(() => this.customStart() || '');
+  public endTimeMin = computed(() =>
+    this.customEnd() === this.customStart() ? this.customStartTime() || '' : ''
+  );
 
   // Computed: Dates/Heures combinées
   public customStartDateTime = computed(() => {
@@ -312,6 +318,14 @@ export class RoomAvailabilityCalendarComponent implements OnInit {
     this.loadAvailability();
   }
 
+  onStartChange() {
+    this.updateEndIfInvalid();
+    this.onCustomRangeChange();
+  }
+
+  onEndChange() {
+    this.onCustomRangeChange();
+  }
 
   onCustomRangeChange() {
     const start = this.customStartDateTime();
@@ -345,6 +359,21 @@ export class RoomAvailabilityCalendarComponent implements OnInit {
     });
 
     this.customRangeConflict.set(hasConflict);
+  }
+
+  private updateEndIfInvalid() {
+    const start = this.customStartDateTime();
+    const end = this.customEndDateTime();
+
+    if (!start) {
+      return;
+    }
+
+    if (!end || end <= start) {
+      const newEnd = new Date(start.getTime() + 60 * 60 * 1000);
+      this.customEnd.set(this.formatDate(newEnd));
+      this.customEndTime.set(this.formatTime(newEnd));
+    }
   }
 
   private loadAvailabilityForCustomRange() {
@@ -621,5 +650,15 @@ export class RoomAvailabilityCalendarComponent implements OnInit {
     }
 
     return events;
+  }
+
+  private formatDate(date: Date) {
+    return date.toISOString().split('T')[0];
+  }
+
+  private formatTime(date: Date) {
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
   }
 }

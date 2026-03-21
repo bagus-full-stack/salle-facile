@@ -17,8 +17,8 @@
   </component>
   <component name="CopilotUserSelectedModel">
     <selectedModels>
-      <entry key="chat-panel" value="Claude Haiku 4.5" />
-      <entry key="agent-panel" value="Claude Haiku 4.5" />
+      <entry key="chat-panel" value="GPT-5.1-Codex-Max" />
+      <entry key="agent-panel" value="GPT-5.1-Codex-Max" />
     </selectedModels>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -113,7 +113,7 @@
       <workItem from="1773394998742" duration="18000" />
       <workItem from="1773408407314" duration="26707000" />
       <workItem from="1774133024020" duration="65000" />
-      <workItem from="1774133137420" duration="2832000" />
+      <workItem from="1774133137420" duration="3431000" />
     </task>
     <servers />
   </component>
