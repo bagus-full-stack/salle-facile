@@ -110,7 +110,6 @@ interface DayAvailability {
           <p class="text-sm">{{ error() }}</p>
         </div>
       } @else {
-        <!-- Affichage SEMAINE -->
         @if (viewMode() === 'week') {
           <div class="overflow-x-auto">
             <div class="space-y-4">
@@ -130,32 +129,45 @@ interface DayAvailability {
                 </div>
               </div>
 
-              <!-- Grille des jours -->
-              <div class="grid gap-2" [style.grid-template-columns]="'repeat(' + displayDays().length + ', 1fr)'">
+              <!-- Grille continue type Google Calendar -->
+              <div class="grid" [style.grid-template-columns]="'80px repeat(' + displayDays().length + ', 1fr)'">
+                <!-- Axe Y -->
+                <div class="relative border-r border-gray-200">
+                  @for (hour of hours; track hour) {
+                    <div class="text-[11px] text-gray-500 h-12 leading-[48px] px-2 border-b border-gray-100">
+                      {{ hour }}:00
+                    </div>
+                  }
+                </div>
+
+                <!-- Colonnes des jours -->
                 @for (day of displayDays(); track day.date.toDateString()) {
-                  <div class="border rounded-lg overflow-hidden">
-                    <div class="bg-gray-100 text-center py-2 border-b border-gray-200">
+                  <div class="relative border-l border-gray-100" style="height: 1152px;"> <!-- 24h * 48px -->
+                    <div class="sticky top-0 bg-white z-10 text-center py-2 border-b border-gray-200">
                       <div class="font-semibold text-gray-900 text-sm">{{ day.dayName }}</div>
                       <div class="text-xs text-gray-500">{{ day.dayNumber }}</div>
                     </div>
 
-                    <div class="text-xs font-semibold">
-                      @for (slotInfo of day.slots; track slotInfo.slot.label) {
-                        <div
-                          (click)="selectSlot(day.date, slotInfo.slot)"
-                          [class.bg-red-100]="!slotInfo.isAvailable"
-                          [class.bg-blue-200]="isInCustomRange(day.date, slotInfo.slot)"
-                          [class.bg-green-100]="slotInfo.isAvailable && !isInCustomRange(day.date, slotInfo.slot)"
-                          [class.cursor-not-allowed]="!slotInfo.isAvailable"
-                          [class.cursor-pointer]="slotInfo.isAvailable"
-                          [class.border-l-4]="isInCustomRange(day.date, slotInfo.slot)"
-                          [class.border-blue-500]="isInCustomRange(day.date, slotInfo.slot)"
-                          class="px-2 py-1 border-b border-gray-200 text-center text-gray-700"
-                        >
-                          {{ slotInfo.slot.label }}
-                        </div>
-                      }
-                    </div>
+                    <!-- lignes horizontales légères -->
+                    @for (hour of hours; track hour) {
+                      <div class="absolute left-0 right-0 border-b border-gray-100"
+                           [style.top.px]="hour * 48"
+                           style="height: 48px;"></div>
+                    }
+
+                    <!-- Blocs réservations / blocages -->
+                    @for (event of getDayEvents(day.date); track event.id) {
+                      <div class="absolute left-1 right-1 rounded-md shadow-sm text-[12px] px-2 py-1 overflow-hidden"
+                           [ngClass]="{
+                             'bg-red-200 border border-red-400 text-red-900': event.type === 'busy',
+                             'bg-blue-200 border border-blue-500 text-blue-900': event.type === 'selection'
+                           }"
+                           [style.top.px]="event.top"
+                           [style.height.px]="event.height">
+                        <div class="font-semibold truncate">{{ event.label }}</div>
+                        <div class="text-xs opacity-80">{{ event.timeLabel }}</div>
+                      </div>
+                    }
                   </div>
                 }
               </div>
@@ -163,7 +175,6 @@ interface DayAvailability {
           </div>
         }
 
-        <!-- Affichage MOIS -->
         @if (viewMode() === 'month') {
           <div class="text-center text-gray-600 py-8">
             <p>Veuillez sélectionner votre plage horaire à l'aide des champs ci-dessus et afficher la semaine pour voir le calendrier détaillé.</p>
@@ -266,6 +277,9 @@ export class RoomAvailabilityCalendarComponent implements OnInit {
       parseInt(endMin)
     );
   });
+
+  public hours = Array.from({ length: 24 }, (_, i) => i);
+  private readonly minutePx = 48 / 60; // 48px per hour container, so 0.8px per minute
 
   // Créneaux horaires standards (24h/24)
   private readonly timeSlots: TimeSlot[] = Array.from({ length: 24 }, (_, i) => ({
@@ -459,7 +473,6 @@ export class RoomAvailabilityCalendarComponent implements OnInit {
     });
   }
 
-  // ...existing code...
   private loadAvailability() {
     this.isLoading.set(true);
 
@@ -541,5 +554,72 @@ export class RoomAvailabilityCalendarComponent implements OnInit {
 
       return { slot, isAvailable };
     });
+  }
+
+  public getDayEvents(date: Date) {
+    const events: Array<{
+      id: string;
+      label: string;
+      timeLabel: string;
+      top: number;
+      height: number;
+      type: 'busy' | 'selection';
+    }> = [];
+
+    const dayStart = new Date(date);
+    dayStart.setHours(0, 0, 0, 0);
+    const dayEnd = new Date(date);
+    dayEnd.setHours(23, 59, 59, 999);
+
+    // Réservations et blocages
+    for (const res of this.reservations()) {
+      const resStart = new Date(res.startTime);
+      const resEnd = new Date(res.endTime);
+      if (resStart > dayEnd || resEnd < dayStart) continue;
+
+      const start = resStart < dayStart ? dayStart : resStart;
+      const end = resEnd > dayEnd ? dayEnd : resEnd;
+
+      const startMinutes = start.getHours() * 60 + start.getMinutes();
+      const endMinutes = end.getHours() * 60 + end.getMinutes();
+      const heightMinutes = Math.max(15, endMinutes - startMinutes); // mini visibilité
+
+      const label = res.status === 'BLOCKED' ? 'Bloqué' : 'Réservation';
+      const timeLabel = `${start.getHours().toString().padStart(2, '0')}:${start.getMinutes().toString().padStart(2, '0')} - ${end.getHours().toString().padStart(2, '0')}:${end.getMinutes().toString().padStart(2, '0')}`;
+
+      events.push({
+        id: res.id,
+        label,
+        timeLabel,
+        top: startMinutes * this.minutePx,
+        height: heightMinutes * this.minutePx,
+        type: 'busy'
+      });
+    }
+
+    // Plage sélectionnée manuelle (custom range)
+    const startSel = this.customStartDateTime();
+    const endSel = this.customEndDateTime();
+    if (startSel && endSel && startSel < dayEnd && endSel > dayStart) {
+      const start = startSel < dayStart ? dayStart : startSel;
+      const end = endSel > dayEnd ? dayEnd : endSel;
+
+      const startMinutes = start.getHours() * 60 + start.getMinutes();
+      const endMinutes = end.getHours() * 60 + end.getMinutes();
+      const heightMinutes = Math.max(15, endMinutes - startMinutes);
+
+      const timeLabel = `${start.getHours().toString().padStart(2, '0')}:${start.getMinutes().toString().padStart(2, '0')} - ${end.getHours().toString().padStart(2, '0')}:${end.getMinutes().toString().padStart(2, '0')}`;
+
+      events.push({
+        id: `selection-${dayStart.getTime()}`,
+        label: 'Votre sélection',
+        timeLabel,
+        top: startMinutes * this.minutePx,
+        height: heightMinutes * this.minutePx,
+        type: 'selection'
+      });
+    }
+
+    return events;
   }
 }
