@@ -25,5 +25,12 @@ export class AvailabilityService {
       }
     );
   }
-}
 
+  blockRoom(roomId: string, start: Date, end: Date, reason: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${roomId}/block`, {
+      start: start.toISOString(),
+      end: end.toISOString(),
+      reason
+    });
+  }
+}

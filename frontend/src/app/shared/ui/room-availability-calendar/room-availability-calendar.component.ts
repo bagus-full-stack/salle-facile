@@ -1,5 +1,6 @@
 import { Component, Input, ChangeDetectionStrategy, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { AvailabilityService, Reservation } from '../../../core/services/availability.service';
 
 interface TimeSlot {
@@ -144,12 +145,30 @@ interface DayAvailability {
               </div>
             }
           </div>
-          <button
-            (click)="proceedToCheckout()"
-            class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition"
-          >
-            Continuer vers la réservation
-          </button>
+
+          @if (isAdmin) {
+            <div class="space-y-3">
+              <input
+                #reasonInput
+                type="text"
+                placeholder="Raison du blocage (ex: Maintenance)"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-red-500"
+              >
+              <button
+                (click)="blockSlots(reasonInput.value || 'Fermeture exceptionnelle')"
+                class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-lg transition"
+              >
+                Bloquer ces créneaux
+              </button>
+            </div>
+          } @else {
+            <button
+              (click)="proceedToCheckout()"
+              class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition"
+            >
+              Continuer vers la réservation
+            </button>
+          }
         </div>
       }
     </div>
@@ -157,8 +176,10 @@ interface DayAvailability {
 })
 export class RoomAvailabilityCalendarComponent implements OnInit {
   @Input({ required: true }) roomId!: string;
+  @Input() isAdmin = false; // Input pour activer le mode admin
 
   private availabilityService = inject(AvailabilityService);
+  private router = inject(Router);
 
   // États
   public viewMode = signal<'day' | 'week' | 'month'>('week');
@@ -168,11 +189,12 @@ export class RoomAvailabilityCalendarComponent implements OnInit {
   public displayDays = signal<DayAvailability[]>([]);
   public reservations = signal<Reservation[]>([]);
 
-  // Créneaux horaires standards
-  private readonly timeSlots: TimeSlot[] = [
-    { start: 9, end: 12, label: '09h-12h' },
-    { start: 13, end: 17, label: '13h-17h' }
-  ];
+  // Créneaux horaires standards (24h/24)
+  private readonly timeSlots: TimeSlot[] = Array.from({ length: 24 }, (_, i) => ({
+    start: i,
+    end: i + 1,
+    label: `${i}h-${i + 1}h`
+  }));
 
   // Sélections utilisateur
   public selectedSlots = signal<{
@@ -195,6 +217,7 @@ export class RoomAvailabilityCalendarComponent implements OnInit {
     this.selectedDate.set(new Date(input.value));
     this.loadAvailability();
   }
+
 
   private loadAvailability() {
     this.isLoading.set(true);
@@ -333,9 +356,47 @@ export class RoomAvailabilityCalendarComponent implements OnInit {
   }
 
   proceedToCheckout() {
-    // Passer les créneaux sélectionnés au service de réservation
-    console.log('Créneaux sélectionnés:', this.selectedSlots());
-    // La navigation sera gérée depuis le composant parent
+    const slots = this.selectedSlots();
+    if (slots.length === 0) return;
+
+    // Sort by time
+    const sortedSlots = [...slots].sort((a, b) => a.dateTime.getTime() - b.dateTime.getTime());
+
+    // Find min start and max end
+    const start = sortedSlots[0].dateTime;
+    const end = sortedSlots[sortedSlots.length - 1].endTime;
+
+    // Navigate to checkout
+    this.router.navigate(['/reservation/checkout'], {
+      queryParams: {
+        roomId: this.roomId,
+        start: start.toISOString(),
+        end: end.toISOString()
+      }
+    });
+  }
+
+  // Méthode pour l'admin
+  blockSlots(reason: string) {
+    const slots = this.selectedSlots();
+    if (slots.length === 0) return;
+
+    const sortedSlots = [...slots].sort((a, b) => a.dateTime.getTime() - b.dateTime.getTime());
+    const start = sortedSlots[0].dateTime;
+    const end = sortedSlots[sortedSlots.length - 1].endTime;
+
+    this.isLoading.set(true);
+    this.availabilityService.blockRoom(this.roomId, start, end, reason).subscribe({
+      next: () => {
+        this.selectedSlots.set([]); // Reset selection
+        this.loadAvailability(); // Reload to show blocked slots
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Erreur lors du blocage:', err);
+        this.error.set('Erreur lors du blocage du créneau.');
+        this.isLoading.set(false);
+      }
+    });
   }
 }
-

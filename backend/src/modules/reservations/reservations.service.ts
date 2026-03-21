@@ -23,7 +23,7 @@ export class ReservationsService {
         const conflict = await this.prisma.reservation.findFirst({
             where: {
                 roomId,
-                status: { in: ['CONFIRMED', 'PENDING'] },
+                status: { in: ['CONFIRMED', 'PENDING', 'BLOCKED'] },
                 startTime: { lt: end },
                 endTime: { gt: start },
             },

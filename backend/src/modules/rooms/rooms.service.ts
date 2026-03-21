@@ -41,13 +41,13 @@ export class RoomsService {
         return room;
     }
 
-    // ⚡️ LA MÉTHODE SAUVÉE : Vérification des conflits pour le tunnel de réservation
+    // ⚡️ LA MÉTHODE SAUVE : Vérification des conflits pour le tunnel de réservation
     async getRoomAvailability(id: string, start: Date, end: Date) {
         // On cherche s'il existe une réservation confirmée ou en attente qui chevauche ce créneau
         const overlappingReservations = await this.prisma.reservation.findMany({
             where: {
                 roomId: id,
-                status: { in: ['CONFIRMED', 'PENDING'] },
+                status: { in: ['CONFIRMED', 'PENDING', 'BLOCKED'] },
                 // La logique d'intersection : la résa existante commence AVANT la fin souhaitée,
                 // ET elle se termine APRÈS le début souhaité.
                 startTime: { lt: end },
@@ -67,7 +67,7 @@ export class RoomsService {
         return this.prisma.reservation.findMany({
             where: {
                 roomId: id,
-                status: { in: ['CONFIRMED', 'PENDING'] },
+                status: { in: ['CONFIRMED', 'PENDING', 'BLOCKED'] },
                 startTime: { lt: end },
                 endTime: { gt: start },
             },
@@ -216,6 +216,30 @@ export class RoomsService {
             where: { id },
             data: dataToUpdate,
             include: { images: true, equipments: true }
+        });
+    }
+
+    // Bloquer une salle (Admin)
+    async blockRoom(id: string, start: Date, end: Date, reason: string, adminUserId: string) {
+        // Vérifier si la salle existe
+        await this.findOne(id);
+
+        const duration = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+
+        return this.prisma.reservation.create({
+            data: {
+                reference: `#BLK-${Date.now()}`,
+                roomId: id,
+                userId: adminUserId,
+                startTime: start,
+                endTime: end,
+                status: 'BLOCKED',
+                notes: reason,
+                duration: duration,
+                subtotal: 0,
+                taxAmount: 0,
+                totalPrice: 0, 
+            }
         });
     }
 

@@ -33,9 +33,10 @@ enum RoomCategory {
 }
 
 enum ReservationStatus {
-  PENDING // En attente (ex: paiement sur place prévu)
-  CONFIRMED // Validée et payée
-  CANCELLED // Annulée
+  PENDING // En attente (ex: paiement sur place prevu)
+  CONFIRMED // Valide et paye
+  CANCELLED // Annule
+  BLOCKED // Bloque par l'administrateur
 }
 
 enum PaymentStatus {

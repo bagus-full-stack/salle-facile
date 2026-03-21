@@ -76,11 +76,21 @@ export class RoomsController {
         return this.roomsService.findOne(id);
     }
 
-
     // ==========================================
     // 👑 ROUTES ADMIN (Création & Édition)
     // ==========================================
 
+    @Post(':id/block')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.SUPER_ADMIN, Role.MANAGER)
+    async blockRoom(
+        @Param('id', ParseUUIDPipe) id: string,
+        @Body() body: { start: string; end: string; reason: string },
+        @Req() req: any
+    ) {
+        const userId = req.user.sub || req.user.id; // Fallback just in case
+        return this.roomsService.blockRoom(id, new Date(body.start), new Date(body.end), body.reason, userId);
+    }
 
     @Post()
     @UseGuards(JwtAuthGuard, RolesGuard)

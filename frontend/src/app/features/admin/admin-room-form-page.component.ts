@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { RoomAvailabilityCalendarComponent } from '../../shared/ui/room-availability-calendar/room-availability-calendar.component';
 
 @Component({
   selector: 'app-admin-room-form-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, RoomAvailabilityCalendarComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="p-8 bg-gray-50 min-h-screen font-sans">
@@ -94,6 +95,23 @@ import { HttpClient } from '@angular/common/http';
               </div>
             }
           </div>
+
+          <!-- CALENDRIER DE DISPONIBILITÉ (Seulement en édition) -->
+          @if (isEditMode() && roomId()) {
+            <div class="mt-6">
+               <h2 class="text-lg font-bold text-gray-900 mb-4">Gestion des disponibilités</h2>
+               <p class="text-sm text-gray-500 mb-4">Sélectionnez des créneaux pour les bloquer (Maintenance, Fermeture...).</p>
+               <app-room-availability-calendar
+                  [roomId]="roomId()!"
+                  [isAdmin]="true"
+               ></app-room-availability-calendar>
+            </div>
+          } @else {
+             <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-center mt-6">
+                <p class="text-blue-800 font-semibold">Gestion des disponibilités</p>
+                <p class="text-sm text-blue-600">Vous pourrez accéder au calendrier et bloquer des créneaux une fois la salle créée.</p>
+             </div>
+          }
         </div>
 
         <div class="col-span-1 space-y-6">
