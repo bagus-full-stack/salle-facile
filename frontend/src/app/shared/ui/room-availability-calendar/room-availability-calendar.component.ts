@@ -44,6 +44,29 @@ interface DayAvailability {
         </div>
       </div>
 
+      @if (viewMode() === 'week') {
+        <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+          <div class="text-sm font-semibold text-gray-700">{{ weekLabel() }}</div>
+          <div class="flex items-center gap-2">
+            <button
+              (click)="goToPreviousWeek()"
+              class="px-3 py-1 rounded text-sm font-semibold border border-gray-200 bg-white hover:bg-gray-50 transition">
+              &lt; Semaine précédente
+            </button>
+            <button
+              (click)="goToToday()"
+              class="px-3 py-1 rounded text-sm font-semibold border border-gray-200 bg-white hover:bg-gray-50 transition">
+              Aujourd'hui
+            </button>
+            <button
+              (click)="goToNextWeek()"
+              class="px-3 py-1 rounded text-sm font-semibold border border-gray-200 bg-white hover:bg-gray-50 transition">
+              Semaine suivante &gt;
+            </button>
+          </div>
+        </div>
+      }
+
       <!-- Sélecteur libre de plage horaire -->
       <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6">
         <h3 class="font-bold text-gray-900 mb-4">Sélectionner une plage horaire</h3>
@@ -256,6 +279,11 @@ export class RoomAvailabilityCalendarComponent implements OnInit {
   public endTimeMin = computed(() =>
     this.customEnd() === this.customStart() ? this.customStartTime() || '' : ''
   );
+  public weekLabel = computed(() => {
+    const { start, end } = this.getWeekRange(this.selectedDate());
+    const format = (date: Date) => date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+    return `${format(start)} - ${format(end)}`;
+  });
 
   // Computed: Dates/Heures combinées
   public customStartDateTime = computed(() => {
@@ -315,6 +343,27 @@ export class RoomAvailabilityCalendarComponent implements OnInit {
 
   setViewMode(mode: 'week' | 'month') {
     this.viewMode.set(mode);
+    this.loadAvailability();
+  }
+
+  goToPreviousWeek() {
+    const current = this.selectedDate();
+    const target = new Date(current);
+    target.setDate(target.getDate() - 7);
+    this.selectedDate.set(target);
+    this.loadAvailability();
+  }
+
+  goToNextWeek() {
+    const current = this.selectedDate();
+    const target = new Date(current);
+    target.setDate(target.getDate() + 7);
+    this.selectedDate.set(target);
+    this.loadAvailability();
+  }
+
+  goToToday() {
+    this.selectedDate.set(new Date());
     this.loadAvailability();
   }
 
@@ -508,14 +557,9 @@ export class RoomAvailabilityCalendarComponent implements OnInit {
     let start: Date, end: Date;
 
     if (this.viewMode() === 'week') {
-      const today = this.selectedDate();
-      const dayOfWeek = today.getDay();
-      const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Lundi
-      start = new Date(today.setDate(diff));
-      start.setHours(0, 0, 0, 0);
-      end = new Date(start);
-      end.setDate(end.getDate() + 6);
-      end.setHours(23, 59, 59, 999);
+      const range = this.getWeekRange(this.selectedDate());
+      start = range.start;
+      end = range.end;
     } else {
       // Month
       start = new Date(this.selectedDate().getFullYear(), this.selectedDate().getMonth(), 1);
@@ -545,13 +589,10 @@ export class RoomAvailabilityCalendarComponent implements OnInit {
     const days: DayAvailability[] = [];
 
     if (this.viewMode() === 'week') {
-      const today = this.selectedDate();
-      const dayOfWeek = today.getDay();
-      const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-      const monday = new Date(today.setDate(diff));
+      const { start } = this.getWeekRange(this.selectedDate());
 
       for (let i = 0; i < 7; i++) {
-        const date = new Date(monday);
+        const date = new Date(start);
         date.setDate(date.getDate() + i);
         const dayName = date.toLocaleDateString('fr-FR', { weekday: 'short' });
         const dayNumber = date.getDate();
@@ -566,6 +607,24 @@ export class RoomAvailabilityCalendarComponent implements OnInit {
     }
 
     this.displayDays.set(days);
+  }
+
+  private getWeekRange(reference: Date) {
+    const ref = new Date(reference);
+    ref.setHours(0, 0, 0, 0);
+
+    const dayOfWeek = ref.getDay();
+    const diff = ref.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Lundi
+
+    const start = new Date(ref);
+    start.setDate(diff);
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date(start);
+    end.setDate(end.getDate() + 6);
+    end.setHours(23, 59, 59, 999);
+
+    return { start, end };
   }
 
   private getSlotAvailability(date: Date): { slot: TimeSlot; isAvailable: boolean }[] {
