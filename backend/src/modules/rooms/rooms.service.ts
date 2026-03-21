@@ -62,6 +62,24 @@ export class RoomsService {
         };
     }
 
+    // Récupérer les réservations pour le calendrier
+    async getRoomReservations(id: string, start: Date, end: Date) {
+        return this.prisma.reservation.findMany({
+            where: {
+                roomId: id,
+                status: { in: ['CONFIRMED', 'PENDING'] },
+                startTime: { lt: end },
+                endTime: { gt: start },
+            },
+            select: {
+                id: true,
+                startTime: true,
+                endTime: true,
+                status: true
+            }
+        });
+    }
+
     // Get all available equipments
     async getEquipments() {
         return this.prisma.equipment.findMany({

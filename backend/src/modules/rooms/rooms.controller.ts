@@ -46,16 +46,19 @@ export class RoomsController {
         return this.roomsService.findAll(category, minCapacity, search);
     }
 
-    // GET all equipments for the admin panel (MUST be before :id route)
     @Get('admin/equipments')
     async getEquipments() {
         return this.roomsService.getEquipments();
     }
 
-    @Get(':id')
-    async getRoomDetails(@Param('id', ParseUUIDPipe) id: string) {
-        // Note: Assure-toi que ta méthode s'appelle bien findOne ou getRoomById dans ton service
-        return this.roomsService.findOne(id);
+    // 📅 Endpoint pour le calendrier (DOIT ÊTRE AVANT :id)
+    @Get(':id/schedule')
+    async getRoomSchedule(
+        @Param('id', ParseUUIDPipe) id: string,
+        @Query('start') start: string,
+        @Query('end') end: string,
+    ) {
+        return this.roomsService.getRoomReservations(id, new Date(start), new Date(end));
     }
 
     // ⚡️ LA ROUTE SAUVÉE : Indispensable pour le tunnel de réservation
@@ -68,10 +71,16 @@ export class RoomsController {
         return this.roomsService.getRoomAvailability(id, new Date(start), new Date(end));
     }
 
+    @Get(':id')
+    async getRoomDetails(@Param('id', ParseUUIDPipe) id: string) {
+        return this.roomsService.findOne(id);
+    }
+
 
     // ==========================================
     // 👑 ROUTES ADMIN (Création & Édition)
     // ==========================================
+
 
     @Post()
     @UseGuards(JwtAuthGuard, RolesGuard)

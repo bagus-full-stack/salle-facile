@@ -1,6 +1,7 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-checkout-success-page',
@@ -74,25 +75,37 @@ import { HttpClient } from '@angular/common/http';
     </div>
   `
 })
-export class CheckoutSuccessPageComponent {
+export class CheckoutSuccessPageComponent implements OnInit {
   private http = inject(HttpClient);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
   public isDownloading = signal(false);
 
   // Simulation d'un ID de réservation (en temps normal, on le récupère via le router/state)
-  private reservationId = '123e4567-e89b-12d3-a456-426614174000';
+  private reservationId = signal<string | null>(null);
+
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.reservationId.set(params['reservationId']);
+    });
+  }
 
   downloadPdf() {
+    if (!this.reservationId()) {
+      alert("Erreur: ID de réservation manquant.");
+      return;
+    }
     this.isDownloading.set(true);
 
     // On demande explicitement un Blob (fichier binaire) à HttpClient
-    this.http.get(`http://localhost:3000/billing/${this.reservationId}/receipt`, { responseType: 'blob' })
+    this.http.get(`http://localhost:3000/billing/${this.reservationId()}/receipt`, { responseType: 'blob' })
       .subscribe({
         next: (blob) => {
           // Création d'un lien temporaire dans le DOM pour forcer le téléchargement
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = `recu-${this.reservationId}.pdf`;
+          a.download = `recu-${this.reservationId()}.pdf`;
           document.body.appendChild(a);
           a.click();
           window.URL.revokeObjectURL(url);

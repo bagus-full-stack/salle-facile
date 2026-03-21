@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f9fafb; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .header { text-align: center; border-bottom: 2px solid #f3f4f6; padding-bottom: 20px; margin-bottom: 20px; }
+        .brand { color: #dc2626; font-size: 24px; font-weight: bold; }
+        .content { color: #374151; line-height: 1.6; }
+        .footer { text-align: center; color: #9ca3af; font-size: 12px; margin-top: 30px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="brand">❌ Annulation Confirmée</div>
+    </div>
+    <div class="content">
+        <p>Bonjour {{firstName}},</p>
+        <p>Votre réservation <strong>{{reference}}</strong> a bien été annulée.</p>
+        <p>Si vous avez effectué un paiement en ligne, le remboursement sera traité automatiquement sous 3 à 5 jours ouvrés.</p>
+        <p>Nous espérons vous revoir bientôt chez SalleFacile !</p>
+    </div>
+    <div class="footer">
+        <p>&copy; 2026 SalleFacile. Tous droits réservés.</p>
+    </div>
+</div>
+</body>
+</html>
+

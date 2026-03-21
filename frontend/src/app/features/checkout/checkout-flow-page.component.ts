@@ -1,7 +1,7 @@
-import { Component, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, computed, inject, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-checkout-flow-page',
@@ -112,14 +112,16 @@ import { Router } from '@angular/router';
     </div>
   `
 })
-export class CheckoutFlowPageComponent {
+export class CheckoutFlowPageComponent implements OnInit {
   private http = inject(HttpClient);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   // ⚡️ État local via Signals
   public packageType = signal<'HOURLY' | 'HALF_DAY' | 'FULL_DAY'>('HOURLY');
   public paymentMethod = signal<'CREDIT_CARD' | 'ONSITE'>('CREDIT_CARD');
   public isSubmitting = signal(false);
+  public roomId = signal<string | null>(null);
 
   // Computed properties (Exemple de calcul dynamique basé sur les signals)
   public subtotal = computed(() => {
@@ -130,21 +132,31 @@ export class CheckoutFlowPageComponent {
     }
   });
 
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.roomId.set(params['roomId']);
+    });
+  }
+
   submitReservation() {
+    if (!this.roomId()) {
+      alert("Erreur: Aucune salle sélectionnée.");
+      return;
+    }
     this.isSubmitting.set(true);
 
     const payload = {
-      roomId: 'ID_DE_LA_SALLE', // Passé via router state
+      roomId: this.roomId(), // Passé via router state
       startTime: new Date().toISOString(),
       endTime: new Date(Date.now() + 4 * 3600000).toISOString(),
       paymentMethod: this.paymentMethod()
     };
 
     this.http.post('http://localhost:3000/reservations', payload).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.isSubmitting.set(false);
-        // Redirection vers la page de succès "Paiement Réussi" (confirmation_de_paiement_et_re_u_pdf.png)
-        this.router.navigate(['/checkout/success']);
+        // Redirection vers la page de succès avec l'ID de la réservation créé
+        this.router.navigate(['/checkout/success'], { queryParams: { reservationId: res.id } });
       },
       error: (err) => {
         this.isSubmitting.set(false);

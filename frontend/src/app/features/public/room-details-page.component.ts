@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { RoomService } from '../../core/services/room.service';
 import { RoomDetailsUiComponent } from '../../shared/ui/room-details-ui/room-details-ui.component';
+import { RoomAvailabilityCalendarComponent } from '../../shared/ui/room-availability-calendar/room-availability-calendar.component';
 
 @Component({
   selector: 'app-room-details-page',
   standalone: true,
-  imports: [CommonModule, RoomDetailsUiComponent],
+  imports: [CommonModule, RoomDetailsUiComponent, RoomAvailabilityCalendarComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (roomService.isLoading()) {
@@ -19,7 +20,12 @@ import { RoomDetailsUiComponent } from '../../shared/ui/room-details-ui/room-det
         {{ roomService.error() }}
       </div>
     } @else if (roomService.currentRoom()) {
-      <app-room-details-ui [room]="roomService.currentRoom()!"></app-room-details-ui>
+      <div class="space-y-8 pb-32">
+        <app-room-details-ui [room]="roomService.currentRoom()!"></app-room-details-ui>
+        <div class="max-w-7xl mx-auto px-4 pb-16">
+          <app-room-availability-calendar [roomId]="roomService.currentRoom()!.id"></app-room-availability-calendar>
+        </div>
+      </div>
     }
   `
 })
