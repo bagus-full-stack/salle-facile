@@ -2,6 +2,7 @@ import {
     Controller, Get, Post, Patch, Param, Body, Query,
     UseInterceptors, UploadedFiles, ParseUUIDPipe, UseGuards, Req
 } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -89,7 +90,31 @@ export class RoomsController {
         @Req() req: any
     ) {
         const userId = req.user.sub || req.user.id; // Fallback just in case
-        return this.roomsService.blockRoom(id, new Date(body.start), new Date(body.end), body.reason, userId);
+        // Debug logs
+        console.log('[blockRoom] ===== DÉBUT BLOCAGE =====');
+        console.log('[blockRoom] userId:', userId);
+        console.log('[blockRoom] roomId:', id);
+        console.log('[blockRoom] body:', JSON.stringify(body));
+        console.log('[blockRoom] body.start (string):', body.start);
+        console.log('[blockRoom] body.end (string):', body.end);
+        const startDate = new Date(body.start);
+        const endDate = new Date(body.end);
+        console.log('[blockRoom] startDate (Date object):', startDate);
+        console.log('[blockRoom] startDate ISO:', startDate.toISOString());
+        console.log('[blockRoom] endDate (Date object):', endDate);
+        console.log('[blockRoom] endDate ISO:', endDate.toISOString());
+        console.log('[blockRoom] reason:', body.reason);
+        console.log('[blockRoom] ===== FIN BLOCAGE =====');
+
+        // Validation: start doit être strictement avant end
+        if (startDate >= endDate) {
+            console.log('[blockRoom] ❌ VALIDATION FAILED: start >= end');
+            throw new BadRequestException(
+                'La date de fin doit être postérieure à la date de début'
+            );
+        }
+
+        return this.roomsService.blockRoom(id, startDate, endDate, body.reason, userId);
     }
 
     @Post()

@@ -536,19 +536,50 @@ export class RoomAvailabilityCalendarComponent implements OnInit {
 
     if (!start || !end || this.customRangeConflict()) return;
 
+    console.log('[blockCustomRange] ===== SENDING BLOCK REQUEST =====');
+    console.log('[blockCustomRange] roomId:', this.roomId);
+    console.log('[blockCustomRange] start (Date):', start);
+    console.log('[blockCustomRange] start ISO:', start.toISOString());
+    console.log('[blockCustomRange] end (Date):', end);
+    console.log('[blockCustomRange] end ISO:', end.toISOString());
+    console.log('[blockCustomRange] reason:', reason);
+    const payload = {
+      start: start.toISOString(),
+      end: end.toISOString(),
+      reason
+    };
+    console.log('[blockCustomRange] payload:', JSON.stringify(payload));
+
     this.isLoading.set(true);
     this.availabilityService.blockRoom(this.roomId, start, end, reason).subscribe({
       next: () => {
+        console.log('[blockCustomRange] ===== BLOCK REQUEST SUCCESS =====');
+        console.log('[blockCustomRange] ✅ Créneau bloqué avec succès');
+        // Affiche un message de succès à l'utilisateur
+        this.customRangeError.set('✅ Créneau bloqué avec succès');
         this.customStart.set('');
         this.customEnd.set('');
-        this.customRangeError.set('');
         this.customRangeConflict.set(false);
         this.loadAvailability();
         this.isLoading.set(false);
+        // Efface le message après 3 secondes
+        setTimeout(() => {
+          this.customRangeError.set('');
+        }, 3000);
       },
       error: (err) => {
+        console.error('[blockCustomRange] ===== BLOCK REQUEST FAILED =====');
+        console.error('[blockCustomRange] error:', err);
+        console.error('[blockCustomRange] error status:', err.status);
+        console.error('[blockCustomRange] error statusText:', err.statusText);
+        console.error('[blockCustomRange] error message:', err.message);
+        if (err.error) {
+          console.error('[blockCustomRange] error.error:', JSON.stringify(err.error));
+        }
         console.error('Erreur lors du blocage:', err);
-        this.error.set('Erreur lors du blocage de la plage.');
+        // Affiche le message d'erreur du serveur ou un message par défaut
+        const errorMessage = err.error?.message || err.message || 'Erreur lors du blocage de la plage.';
+        this.customRangeError.set(`❌ ${errorMessage}`);
         this.isLoading.set(false);
       }
     });

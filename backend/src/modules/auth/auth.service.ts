@@ -185,4 +185,18 @@ export class AuthService {
         // 3. On génère le même JWT que pour une connexion classique
         return this.generateToken(user);
     }
+
+    // ✅ PHASE 3 : Refresh token for authenticated user
+    async refreshTokenForUser(userId: string) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId }
+        });
+
+        if (!user || !user.isActive) {
+            throw new UnauthorizedException('Utilisateur non trouvé ou compte désactivé.');
+        }
+
+        console.log('[auth.service] Generating new token for user:', userId);
+        return this.generateToken(user);
+    }
 }

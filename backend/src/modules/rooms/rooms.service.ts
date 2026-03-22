@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma.service';
 
 @Injectable()
@@ -226,6 +227,36 @@ export class RoomsService {
 
         const duration = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
 
+        console.log('[blockRoom Service] Vérification des conflits de blocage...');
+        // Vérifier s'il existe déjà un BLOCKED qui chevauche cette plage
+        const overlappingBlocks = await this.prisma.reservation.findMany({
+            where: {
+                roomId: id,
+                status: 'BLOCKED',
+                startTime: { lt: end },
+                endTime: { gt: start }
+            }
+        });
+
+        if (overlappingBlocks.length > 0) {
+            console.log('[blockRoom Service] ❌ CONFLIT: Un blocage existe déjà sur cette plage');
+            console.log('[blockRoom Service] Conflits:', overlappingBlocks);
+            throw new ConflictException(
+                `Un ou plusieurs créneaux sont déjà bloqués sur cette période (${overlappingBlocks.length} conflit(s))`
+            );
+        }
+        console.log('[blockRoom Service] ✅ Aucun conflit détecté. Création du blocage...');
+
+        console.log('[blockRoom Service] ===== CREATING BLOCK =====');
+        console.log('[blockRoom Service] roomId:', id);
+        console.log('[blockRoom Service] adminUserId:', adminUserId);
+        console.log('[blockRoom Service] start:', start);
+        console.log('[blockRoom Service] start ISO:', start.toISOString());
+        console.log('[blockRoom Service] end:', end);
+        console.log('[blockRoom Service] end ISO:', end.toISOString());
+        console.log('[blockRoom Service] duration (hours):', duration);
+        console.log('[blockRoom Service] reason:', reason);
+
         return this.prisma.reservation.create({
             data: {
                 reference: `#BLK-${Date.now()}`,
@@ -240,6 +271,14 @@ export class RoomsService {
                 taxAmount: 0,
                 totalPrice: 0, 
             }
+        }).then(result => {
+            console.log('[blockRoom Service] ===== BLOCK CREATED SUCCESS =====');
+            console.log('[blockRoom Service] result:', JSON.stringify(result));
+            return result;
+        }).catch(error => {
+            console.error('[blockRoom Service] ===== BLOCK CREATION FAILED =====');
+            console.error('[blockRoom Service] error:', error);
+            throw error;
         });
     }
 

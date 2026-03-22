@@ -54,6 +54,38 @@ export class AuthService {
   }
 
   logout() {
+    // ✅ PHASE 2 : Appeler logout backend pour invalider le token
+    if (isPlatformBrowser(this.platformId)) {
+      console.log('[AuthService] Calling backend logout endpoint');
+      this.http.post(`${this.apiUrl}/logout`, {}).subscribe({
+        next: () => {
+          console.log('[AuthService] Backend logout successful');
+        },
+        error: (err) => {
+          console.error('[AuthService] Backend logout error (non-critical):', err);
+        },
+        complete: () => {
+          this.performLocalLogout();
+        }
+      });
+    } else {
+      this.performLocalLogout();
+    }
+  }
+
+  // ✅ PHASE 3 : Refresh token silencieusement
+  refreshToken() {
+    console.log('[AuthService] Attempting to refresh token');
+    return this.http.post<any>(`${this.apiUrl}/refresh-token`, {}).pipe(
+      tap(response => {
+        console.log('[AuthService] Token refreshed successfully');
+        this.handleAuthSuccess(response);
+      })
+    );
+  }
+
+  private performLocalLogout() {
+    console.log('[AuthService] Performing local logout cleanup');
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('access_token');
       localStorage.removeItem('user');

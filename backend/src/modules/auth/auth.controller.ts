@@ -3,7 +3,8 @@ import * as express from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto, ForgotPasswordDto, ResetPasswordDto } from './dto/auth.dto';
 import {AuthGuard} from "@nestjs/passport";
-import { LinkedinAuthGuard } from './linkedin-auth.guard'; // 👈 Import new guard
+import { LinkedinAuthGuard } from './linkedin-auth.guard';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -29,6 +30,28 @@ export class AuthController {
         return this.authService.resetPassword(dto.token, dto.newPassword);
     }
 
+    // ✅ PHASE 2 : Logout endpoint
+    @Post('logout')
+    @UseGuards(JwtAuthGuard)
+    async logout(@Req() req: any) {
+        console.log('[auth.controller] POST /logout called for user:', req.user?.sub);
+        return { message: 'Déconnexion réussie', success: true };
+    }
+
+    // ✅ PHASE 3 : Refresh token endpoint
+    @Post('refresh-token')
+    @UseGuards(JwtAuthGuard)
+    async refreshToken(@Req() req: any) {
+        console.log('[auth.controller] POST /refresh-token called for user:', req.user?.sub);
+        const userId = req.user?.sub || req.user?.id;
+        
+        if (!userId) {
+            throw new Error('User ID not found in token');
+        }
+        
+        return this.authService.refreshTokenForUser(userId);
+    }
+
     @Get('google')
     @UseGuards(AuthGuard('google'))
     async googleAuth(@Req() req) {
@@ -46,13 +69,13 @@ export class AuthController {
     }
 
     @Get('linkedin')
-    @UseGuards(LinkedinAuthGuard) // 👈 Use new guard
+    @UseGuards(LinkedinAuthGuard)
     async linkedinAuth(@Req() req) {
         // Cette route redirige l'utilisateur vers la page de login LinkedIn
     }
 
     @Get('linkedin/callback')
-    @UseGuards(LinkedinAuthGuard) // 👈 Use new guard
+    @UseGuards(LinkedinAuthGuard)
     async linkedinAuthRedirect(@Req() req, @Res() res: express.Response) {
         // LinkedIn nous renvoie ici. req.user contient le JWT généré par notre stratégie.
         const token = req.user.access_token;
