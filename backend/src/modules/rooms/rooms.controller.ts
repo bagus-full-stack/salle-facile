@@ -82,7 +82,7 @@ export class RoomsController {
 
     @Post(':id/block')
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.SUPER_ADMIN, Role.MANAGER)
+    @Roles(Role.SUPER_ADMIN, Role.MANAGER, Role.STAFF)
     async blockRoom(
         @Param('id', ParseUUIDPipe) id: string,
         @Body() body: { start: string; end: string; reason: string },

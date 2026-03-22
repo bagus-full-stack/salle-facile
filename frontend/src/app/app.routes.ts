@@ -26,6 +26,7 @@ import {AdminDashboardPageComponent} from './features/admin/admin-dashboard-page
 import {AdminSettingsPageComponent} from './features/admin/admin-settings-page.component';
 import {AdminLayoutComponent} from './features/admin/admin-layout.component';
 import {ReservationPageComponent} from './features/public/reservation-page.component';
+import {AdminRoomBlockPageComponent} from './features/admin/admin-room-block-page.component';
 
 export const routes: Routes = [
   // 1. Layout par défaut (avec Header + Footer)
@@ -73,6 +74,7 @@ export const routes: Routes = [
       { path: 'salles', component: AdminRoomsPageComponent, title: 'Gestion des Salles' },
       { path: 'salles/edition/:id', component: AdminRoomEditPageComponent },
       { path: 'salles/nouveau', component: AdminRoomEditPageComponent },
+      { path: 'salles/:id/indisponibilites', component: AdminRoomBlockPageComponent, title: 'Bloquer des créneaux' },
 
       { path: 'utilisateurs', component: AdminUsersPageComponent, title: 'Utilisateurs & Rôles' },
 

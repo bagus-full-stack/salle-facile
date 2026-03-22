@@ -1,14 +1,13 @@
 import { Component, ChangeDetectionStrategy, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { RoomAvailabilityCalendarComponent } from '../../shared/ui/room-availability-calendar/room-availability-calendar.component';
 import { HttpClient } from '@angular/common/http';
 import { RoomService } from '../../core/services/room.service';
 
 @Component({
   selector: 'app-admin-rooms-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, RoomAvailabilityCalendarComponent],
+  imports: [CommonModule, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="p-8 bg-gray-50 min-h-screen font-sans">
@@ -96,42 +95,19 @@ import { RoomService } from '../../core/services/room.service';
                   </button>
                 </div>
 
-                <button
-                  (click)="openBlockCalendar(room)"
+                <a
+                  [routerLink]="['/admin/salles', room.id, 'indisponibilites']"
                   class="mt-2 w-full flex items-center justify-center gap-2 px-3 py-2 bg-white border border-red-200 text-red-600 text-xs font-bold rounded-lg hover:bg-red-50 transition"
                   title="Bloquer des créneaux"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M4.93 4.93l14.14 14.14M12 5a7 7 0 100 14 7 7 0 000-14z"></path></svg>
                   Bloquer des créneaux
-                </button>
+                </a>
 
               </div>
             </div>
           }
         </div>
-
-        @if (selectedRoomForBlock()) {
-          <div class="mt-10 bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
-            <div class="flex justify-between items-start mb-4">
-              <div>
-                <p class="text-xs uppercase text-gray-500 font-bold">Gestion des indisponibilités</p>
-                <h3 class="text-lg font-bold text-gray-900">{{ selectedRoomForBlock()!.name }}</h3>
-              </div>
-              <button
-                (click)="closeBlockCalendar()"
-                class="text-gray-500 hover:text-gray-800 bg-gray-100 hover:bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center"
-                title="Fermer"
-              >
-                ✕
-              </button>
-            </div>
-
-            <app-room-availability-calendar
-              [roomId]="selectedRoomForBlock()!.id"
-              [isAdmin]="true"
-            ></app-room-availability-calendar>
-          </div>
-        }
       }
     </div>
   `
@@ -142,7 +118,6 @@ export class AdminRoomsPageComponent implements OnInit {
 
   public rooms = signal<any[]>([]);
   public isLoading = signal<boolean>(true);
-  public selectedRoomForBlock = signal<{ id: string; name: string } | null>(null);
 
   ngOnInit() {
     this.loadRooms();
@@ -175,13 +150,6 @@ export class AdminRoomsPageComponent implements OnInit {
     }
   }
 
-  openBlockCalendar(room: any) {
-    this.selectedRoomForBlock.set({ id: room.id, name: room.name });
-  }
-
-  closeBlockCalendar() {
-    this.selectedRoomForBlock.set(null);
-  }
 
   toggleRoomStatus(roomId: string, currentStatus: boolean) {
     if (confirm(`Voulez-vous ${currentStatus ? 'masquer' : 'publier'} cette salle ?`)) {
