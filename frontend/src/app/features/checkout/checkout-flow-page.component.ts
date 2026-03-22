@@ -86,6 +86,14 @@ import { Router, ActivatedRoute } from '@angular/router';
           <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 sticky top-8">
             <h2 class="text-lg font-bold mb-6">Récapitulatif de la Réservation</h2>
 
+            @if (startTime() && endTime()) {
+              <div class="mb-6 text-sm text-gray-700 space-y-1">
+                <div class="font-semibold text-gray-900">Créneau sélectionné</div>
+                <div>Début : {{ startTime() | date:'dd/MM/yyyy HH:mm' }}</div>
+                <div>Fin : {{ endTime() | date:'dd/MM/yyyy HH:mm' }}</div>
+              </div>
+            }
+
             <div class="border-b pb-4 mb-4 space-y-3 text-sm">
               <div class="flex justify-between">
                 <span class="text-gray-500">Sous-total (4h x 35€)</span>
@@ -122,6 +130,8 @@ export class CheckoutFlowPageComponent implements OnInit {
   public paymentMethod = signal<'CREDIT_CARD' | 'ONSITE'>('CREDIT_CARD');
   public isSubmitting = signal(false);
   public roomId = signal<string | null>(null);
+  public startTime = signal<string | null>(null);
+  public endTime = signal<string | null>(null);
 
   // Computed properties (Exemple de calcul dynamique basé sur les signals)
   public subtotal = computed(() => {
@@ -135,6 +145,8 @@ export class CheckoutFlowPageComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       this.roomId.set(params['roomId']);
+      this.startTime.set(params['start'] ?? null);
+      this.endTime.set(params['end'] ?? null);
     });
   }
 
@@ -147,8 +159,8 @@ export class CheckoutFlowPageComponent implements OnInit {
 
     const payload = {
       roomId: this.roomId(), // Passé via router state
-      startTime: new Date().toISOString(),
-      endTime: new Date(Date.now() + 4 * 3600000).toISOString(),
+      startTime: this.startTime() ?? new Date().toISOString(),
+      endTime: this.endTime() ?? new Date(Date.now() + 4 * 3600000).toISOString(),
       paymentMethod: this.paymentMethod()
     };
 

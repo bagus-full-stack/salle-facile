@@ -90,8 +90,8 @@ import { Room } from '../../../core/services/room.service';
               </div>
             </div>
 
-            <button (click)="bookRoom()" class="w-full bg-[#1da1f2] hover:bg-blue-500 text-white font-semibold py-3.5 rounded-xl transition-colors shadow-sm">
-              Réserver cette salle
+            <button (click)="viewAvailability()" class="w-full bg-[#1da1f2] hover:bg-blue-500 text-white font-semibold py-3.5 rounded-xl transition-colors shadow-sm">
+              Voir les disponibilités
             </button>
           </div>
 
@@ -106,7 +106,7 @@ export class RoomDetailsUiComponent {
   // Le Smart Component passera l'objet Room ici
   @Input({ required: true }) room!: Room;
 
-  bookRoom() {
-    this.router.navigate(['/checkout'], { queryParams: { roomId: this.room.id } });
+  viewAvailability() {
+    this.router.navigate(['/reservation'], { queryParams: { roomId: this.room.id } });
   }
 }

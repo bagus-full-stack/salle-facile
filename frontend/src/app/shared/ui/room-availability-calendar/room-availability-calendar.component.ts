@@ -245,7 +245,7 @@ interface DayAvailability {
               [disabled]="customRangeConflict() || !customStartDateTime() || !customEndDateTime()"
               class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Continuer vers la réservation
+              Continuer vers le paiement
             </button>
           }
         </div>
@@ -518,7 +518,7 @@ export class RoomAvailabilityCalendarComponent implements OnInit {
 
     if (!start || !end || this.customRangeConflict()) return;
 
-    this.router.navigate(['/reservation/checkout'], {
+    this.router.navigate(['/checkout'], {
       queryParams: {
         roomId: this.roomId,
         start: start.toISOString(),

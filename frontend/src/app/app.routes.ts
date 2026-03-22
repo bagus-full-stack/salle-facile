@@ -25,6 +25,7 @@ import {RoomsListPageComponent} from './features/public/rooms-list-page.componen
 import {AdminDashboardPageComponent} from './features/admin/admin-dashboard-page.component';
 import {AdminSettingsPageComponent} from './features/admin/admin-settings-page.component';
 import {AdminLayoutComponent} from './features/admin/admin-layout.component';
+import {ReservationPageComponent} from './features/public/reservation-page.component';
 
 export const routes: Routes = [
   // 1. Layout par défaut (avec Header + Footer)
@@ -37,6 +38,7 @@ export const routes: Routes = [
       // 🟢 ROUTES PUBLIQUES
       // { path: 'salles', component: RoomsListPageComponent },
       { path: 'salles/:id', component: RoomDetailsPageComponent },
+      { path: 'reservation', component: ReservationPageComponent },
       { path: 'oauth/callback', component: OAuthCallbackComponent },
 
       // 🟡 ROUTES UTILISATEURS
