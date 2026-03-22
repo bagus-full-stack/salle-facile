@@ -30,7 +30,10 @@ import { RoomService } from '../../core/services/room.service';
           {{ roomService.error() }}
         </div>
       } @else {
-        <app-room-availability-calendar [roomId]="roomId()!"></app-room-availability-calendar>
+        <app-room-availability-calendar
+          [roomId]="roomId()!"
+          [hideViewToggle]="true"
+        ></app-room-availability-calendar>
       }
     </div>
   `

@@ -26,22 +26,24 @@ interface DayAvailability {
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-lg font-bold text-gray-900">Disponibilité de la salle</h2>
-        <div class="flex gap-2">
-          <button
-            (click)="setViewMode('week')"
-            [class.bg-blue-500]="viewMode() === 'week'"
-            [class.text-white]="viewMode() === 'week'"
-            class="px-3 py-1 rounded text-sm font-semibold border border-gray-200 transition">
-            Semaine
-          </button>
-          <button
-            (click)="setViewMode('month')"
-            [class.bg-blue-500]="viewMode() === 'month'"
-            [class.text-white]="viewMode() === 'month'"
-            class="px-3 py-1 rounded text-sm font-semibold border border-gray-200 transition">
-            Mois
-          </button>
-        </div>
+        @if (!hideViewToggle) {
+          <div class="flex gap-2">
+            <button
+              (click)="setViewMode('week')"
+              [class.bg-blue-500]="viewMode() === 'week'"
+              [class.text-white]="viewMode() === 'week'"
+              class="px-3 py-1 rounded text-sm font-semibold border border-gray-200 transition">
+              Semaine
+            </button>
+            <button
+              (click)="setViewMode('month')"
+              [class.bg-blue-500]="viewMode() === 'month'"
+              [class.text-white]="viewMode() === 'month'"
+              class="px-3 py-1 rounded text-sm font-semibold border border-gray-200 transition">
+              Mois
+            </button>
+          </div>
+        }
       </div>
 
       @if (viewMode() === 'week') {
@@ -256,6 +258,7 @@ interface DayAvailability {
 export class RoomAvailabilityCalendarComponent implements OnInit {
   @Input({ required: true }) roomId!: string;
   @Input() isAdmin = false;
+  @Input() hideViewToggle = false;
 
   private availabilityService = inject(AvailabilityService);
   private router = inject(Router);
