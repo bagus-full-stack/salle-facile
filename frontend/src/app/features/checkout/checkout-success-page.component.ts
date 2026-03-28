@@ -83,18 +83,40 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
           </div>
         </div>
 
-        <div class="bg-gray-100/50 p-8 rounded-3xl border border-gray-200 flex justify-center shadow-inner">
+        <div class="bg-gray-100/50 p-8 rounded-3xl border border-gray-200 flex justify-center shadow-inner ">
           <div class="bg-white w-full max-w-sm rounded-xl shadow-lg p-8 transform rotate-1 hover:rotate-0 transition duration-300">
-            <div class="flex justify-between items-start mb-8">
-              <div class="font-bold text-[#2b5e6e]">SalleFacile</div>
-              <div class="text-right">
-                <div class="text-2xl font-light text-gray-300 tracking-widest">REÇU</div>
-                <div class="text-xs text-gray-400">{{ reservation().reference }}</div>
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 mt-8 space-y-4">
+              <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Détails de la transaction</h3>
+
+              <div class="flex justify-between items-center py-2 border-b border-gray-50">
+                <span class="text-gray-500 flex items-center gap-2">📄 Référence</span>
+                <span class="font-bold text-gray-900">{{ reservation().reference }}</span>
               </div>
-            </div>
-            <div class="border-t border-dashed border-gray-200 pt-4 flex justify-between font-bold text-gray-900">
-              <span>Total Payé</span>
-              <span class="text-[#1da1f2]">{{ reservation().totalPrice }} €</span>
+              <div class="flex justify-between items-center py-2 border-b border-gray-50">
+                <span class="text-gray-500 flex items-center gap-2">🏠 Salle</span>
+                <span class="font-medium text-gray-900">{{ reservation().room?.name }}</span>
+              </div>
+              <div class="flex justify-between items-center py-2 border-b border-gray-50">
+                <span class="text-gray-500 flex items-center gap-2">📅 Date de début</span>
+                <span class="font-medium text-gray-900">{{ reservation().startTime | date:'dd MMM yyyy, HH:mm' }}</span>
+              </div>
+              <div class="flex justify-between items-center py-2 border-b border-gray-50">
+                <span class="text-gray-500 flex items-center gap-2">⏳ Date de fin</span>
+                <span class="font-medium text-gray-900">{{ reservation().endTime | date:'dd MMM yyyy, HH:mm' }}</span>
+              </div>
+              <div class="flex justify-between items-center py-2">
+                <span class="text-gray-500 flex items-center gap-2">💳 Moyen de paiement</span>
+                <span class="font-medium text-gray-900">
+                {{ reservation().payment?.method === 'CREDIT_CARD' ? 'Carte Bancaire' : 'Sur Place' }}
+                  @if (reservation().payment?.status === 'COMPLETED') { <span class="text-green-500 text-sm ml-1">(Payé)</span> }
+                  @else { <span class="text-orange-500 text-sm ml-1">(En attente)</span> }
+              </span>
+              </div>
+
+              <div class="flex justify-between items-end pt-6 mt-2">
+                <span class="text-gray-500">Montant total</span>
+                <span class="text-3xl font-bold text-[#1da1f2]">{{ reservation().totalPrice }} €</span>
+              </div>
             </div>
           </div>
         </div>

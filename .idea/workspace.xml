@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="65ae8793-3702-43a2-8a33-941d45b4c7e3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17278" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17278" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17302" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17302" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/global/pg_control" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/global/pg_control" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/pg_wal/000000010000000000000005" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/pg_wal/000000010000000000000005" afterDir="false" />
-    </list>
+    <list default="true" id="65ae8793-3702-43a2-8a33-941d45b4c7e3" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
