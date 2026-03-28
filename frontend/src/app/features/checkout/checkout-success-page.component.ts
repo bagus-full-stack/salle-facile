@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-checkout-success-page',
@@ -27,11 +27,14 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
         </div>
       } @else if (reservation()) {
         <div class="space-y-6">
-          <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center shadow-md">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+          <!-- Icône et titre alignés horizontalement -->
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center shadow-md flex-shrink-0">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <h1 class="text-5xl font-extrabold text-gray-900">Paiement Réussi !</h1>
           </div>
 
-          <h1 class="text-5xl font-extrabold text-gray-900">Paiement Réussi !</h1>
           <p class="text-lg text-gray-600">Votre réservation est confirmée. Un email récapitulatif a été envoyé à <span class="text-blue-600 font-medium">{{ reservation().user?.email }}</span>.</p>
 
           <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 mt-8 space-y-4">
@@ -127,7 +130,6 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 export class CheckoutSuccessPageComponent implements OnInit {
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
 
   public isDownloading = signal(false);
   public isLoading = signal(true);
