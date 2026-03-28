@@ -2,13 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="65ae8793-3702-43a2-8a33-941d45b4c7e3" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/AGENTS.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FINAL_CHECKLIST.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/IMPLEMENTATION_SUMMARY.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/INDEX.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JWT_DOCUMENTATION_README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JWT_EXPIRATION_GUIDE.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JWT_IMPLEMENTATION_REPORT.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JWT_VISUAL_DIAGRAMS.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TOAST_INTEGRATION_QUICK_START.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/1/pg_internal.init" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/pg_internal.init" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/pg_internal.init" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17199" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17199" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/global/pg_control" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/global/pg_control" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/global/pg_internal.init" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/global/pg_internal.init" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/pg_wal/000000010000000000000005" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/pg_wal/000000010000000000000005" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/postmaster.pid" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/postmaster.pid" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,8 +31,8 @@
   </component>
   <component name="CopilotUserSelectedModel">
     <selectedModels>
-      <entry key="chat-panel" value="Gemini 3 Pro (Preview)" />
-      <entry key="agent-panel" value="Gemini 3 Pro (Preview)" />
+      <entry key="chat-panel" value="Claude Haiku 4.5" />
+      <entry key="agent-panel" value="Claude Haiku 4.5" />
     </selectedModels>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -51,26 +57,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Node.js.app.ts.executor&quot;: &quot;Run&quot;,
-    &quot;Node.js.main.ts.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
-    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.backend.executor&quot;: &quot;Run&quot;,
-    &quot;npm.frontend.executor&quot;: &quot;Run&quot;,
-    &quot;npm.start (1).executor&quot;: &quot;Run&quot;,
-    &quot;npm.start.executor&quot;: &quot;Run&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\homni\\Documents\\Projects\\SalleFacile\\backend\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Node.js.app.ts.executor": "Run",
+    "Node.js.main.ts.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "dev",
+    "javascript.preferred.runtime.type.id": "node",
+    "nodejs_package_manager_path": "npm",
+    "npm.backend.executor": "Run",
+    "npm.frontend.executor": "Run",
+    "npm.start (1).executor": "Run",
+    "npm.start.executor": "Run",
+    "ts.external.directory.path": "C:\\Users\\homni\\Documents\\Projects\\SalleFacile\\frontend\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="npm.frontend">
     <configuration name="backend" type="js.build_tools.npm" temporary="true">
       <package-json value="$PROJECT_DIR$/backend/package.json" />
@@ -106,7 +113,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.32098.39" />
+        <option value="bundled-js-predefined-d6986cc7102b-3bd3a6803838-JavaScript-WS-261.22158.274" />
       </set>
     </attachedChunks>
   </component>
@@ -123,6 +130,7 @@
       <workItem from="1774133024020" duration="65000" />
       <workItem from="1774133137420" duration="10287000" />
       <workItem from="1774599766303" duration="2379000" />
+      <workItem from="1774704746098" duration="1277000" />
     </task>
     <servers />
   </component>

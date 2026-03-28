@@ -49,7 +49,9 @@ export class AuthController {
             throw new Error('User ID not found in token');
         }
         
-        return this.authService.refreshTokenForUser(userId);
+        const result = await this.authService.refreshTokenForUser(userId);
+        console.log('[auth.controller] Token refreshed successfully for user:', userId);
+        return result;
     }
 
     @Get('google')

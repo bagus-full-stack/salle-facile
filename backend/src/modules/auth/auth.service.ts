@@ -132,15 +132,55 @@ export class AuthService {
     // 🛠 UTILITAIRES
     // ==========================================
 
+    // ==========================================
+    // 🔑 DUAL TOKEN GENERATION (Access + Refresh)
+    // ==========================================
+
+    private generateAccessToken(user: any): string {
+        const payload = {
+            sub: user.id,
+            email: user.email,
+            role: user.role,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            type: 'access'
+        };
+
+        console.log('[auth.service] Generating access token for user:', user.id);
+        
+        // Access Token: 15 minutes (short-lived)
+        return this.jwtService.sign(payload, {
+            expiresIn: '15m'
+        });
+    }
+
+    private generateRefreshToken(user: any): string {
+        const payload = {
+            sub: user.id,
+            type: 'refresh'
+        };
+
+        console.log('[auth.service] Generating refresh token for user:', user.id);
+        
+        // Refresh Token: 7 days (long-lived)
+        return this.jwtService.sign(payload, {
+            expiresIn: '7d'
+        });
+    }
+
     private generateToken(user: any) {
         const payload = {
             sub: user.id,
             email: user.email,
             role: user.role,
             firstName: user.firstName,
-            lastName: user.lastName
+            lastName: user.lastName,
+            type: 'access'
         };
 
+        // Pour backward compatibility, retourner aussi access_token seul
+        console.log('[auth.service] Generating token for user:', user.id);
+        
         return {
             access_token: this.jwtService.sign(payload),
             user: {
