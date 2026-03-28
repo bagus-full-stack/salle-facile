@@ -27,6 +27,14 @@ export class ReservationsController {
         return this.reservationsService.getUserReservations(realUserId);
     }
 
+    // ⚡️ VRAIE VIE : Détail d'une réservation (pour la page de succès)
+    @UseGuards(JwtAuthGuard)
+    @Get(':id')
+    async getReservation(@Req() req, @Param('id', ParseUUIDPipe) reservationId: string) {
+        const realUserId = req.user.sub;
+        return this.reservationsService.getReservationById(reservationId, realUserId);
+    }
+
     // ⚡️ VRAIE VIE : Annulation par le client
     @UseGuards(JwtAuthGuard)
     @Patch(':id/cancel')

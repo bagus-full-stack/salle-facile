@@ -135,6 +135,23 @@ export class ReservationsService {
         });
     }
 
+    async getReservationById(reservationId: string, userId: string) {
+        const reservation = await this.prisma.reservation.findUnique({
+            where: { id: reservationId },
+            include: {
+                user: { select: { email: true } },
+                room: { select: { name: true } },
+                payment: { select: { method: true, status: true } }
+            }
+        });
+
+        if (!reservation || reservation.userId !== userId) {
+            throw new NotFoundException("Réservation introuvable ou accès refusé.");
+        }
+
+        return reservation;
+    }
+
     async cancelReservation(reservationId: string, userId: string) {
         const reservation = await this.prisma.reservation.findUnique({
             where: { id: reservationId }
