@@ -46,37 +46,38 @@ interface DayAvailability {
         }
       </div>
 
-      @if (viewMode() === 'week') {
-        <div class="flex justify-start mb-6">
-          <div class="inline-flex items-center bg-white border border-gray-100 rounded-2xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] p-1.5">
-            <button
-              (click)="goToPreviousWeek()"
-              class="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-50 text-blue-500 hover:bg-blue-100 transition-colors">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-            </button>
-
-            <div class="font-bold text-gray-900 px-6 min-w-[160px] text-center text-sm">
-              {{ weekLabel() }}
-            </div>
-
-            <button
-              (click)="goToNextWeek()"
-              class="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-50 text-blue-500 hover:bg-blue-100 transition-colors">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-
-            <button
-              (click)="goToToday()"
-              class="bg-[#1da1f2] text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-[#1a91da] transition-all ml-4 shadow-sm">
-              Aujourd'hui
-            </button>
-          </div>
-        </div>
-      }
-
-      <!-- Sélecteur libre de plage horaire -->
+      <!-- Sélecteur libre de plage horaire avec Navigation intégrée -->
       <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6">
-        <h3 class="font-bold text-gray-900 mb-4">Sélectionner une plage horaire</h3>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+          <h3 class="font-bold text-gray-900 m-0">Sélectionner une plage horaire</h3>
+
+          @if (viewMode() === 'week') {
+            <div class="inline-flex items-center bg-white border border-gray-100 rounded-2xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] p-1.5">
+              <button
+                (click)="goToPreviousWeek()"
+                class="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-50 text-blue-500 hover:bg-blue-100 transition-colors">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+
+              <div class="font-bold text-gray-900 px-6 min-w-[160px] text-center text-sm">
+                {{ weekLabel() }}
+              </div>
+
+              <button
+                (click)="goToNextWeek()"
+                class="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-50 text-blue-500 hover:bg-blue-100 transition-colors">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+
+              <button
+                (click)="goToToday()"
+                class="bg-[#1da1f2] text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-[#1a91da] transition-all ml-4 shadow-sm">
+                Aujourd'hui
+              </button>
+            </div>
+          }
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
           <div>
             <label class="block text-xs font-semibold text-gray-700 mb-1">Date de début</label>
