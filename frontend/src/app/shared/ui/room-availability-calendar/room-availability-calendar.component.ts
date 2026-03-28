@@ -47,23 +47,28 @@ interface DayAvailability {
       </div>
 
       @if (viewMode() === 'week') {
-        <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
-          <div class="text-sm font-semibold text-gray-700">{{ weekLabel() }}</div>
-          <div class="flex items-center gap-2">
+        <div class="flex justify-start mb-6">
+          <div class="inline-flex items-center bg-white border border-gray-100 rounded-2xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] p-1.5">
             <button
               (click)="goToPreviousWeek()"
-              class="px-3 py-1 rounded text-sm font-semibold border border-gray-200 bg-white hover:bg-gray-50 transition">
-              &lt; Semaine précédente
+              class="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-50 text-blue-500 hover:bg-blue-100 transition-colors">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
             </button>
-            <button
-              (click)="goToToday()"
-              class="px-3 py-1 rounded text-sm font-semibold border border-gray-200 bg-white hover:bg-gray-50 transition">
-              Aujourd'hui
-            </button>
+
+            <div class="font-bold text-gray-900 px-6 min-w-[160px] text-center text-sm">
+              {{ weekLabel() }}
+            </div>
+
             <button
               (click)="goToNextWeek()"
-              class="px-3 py-1 rounded text-sm font-semibold border border-gray-200 bg-white hover:bg-gray-50 transition">
-              Semaine suivante &gt;
+              class="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-50 text-blue-500 hover:bg-blue-100 transition-colors">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+
+            <button
+              (click)="goToToday()"
+              class="bg-[#1da1f2] text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-[#1a91da] transition-all ml-4 shadow-sm">
+              Aujourd'hui
             </button>
           </div>
         </div>
