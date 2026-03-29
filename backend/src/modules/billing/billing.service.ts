@@ -27,21 +27,27 @@ export class BillingService {
         // En-tête du reçu
         doc.fontSize(20).text('SalleFacile', { align: 'left' });
         doc.fontSize(10).text('REÇU', { align: 'right' });
-        doc.text(reservation.reference, { align: 'right' });
-        doc.moveDown();
-
-        // Informations Facturation
-        doc.text(`Facturé à : ${reservation.user.firstName} ${reservation.user.lastName}`);
-        doc.text(`Date : ${reservation.createdAt.toLocaleDateString('fr-FR')}`);
         doc.moveDown(2);
 
-        // Lignes de la commande
-        doc.text(`Description : Location ${reservation.room.name}`);
-        doc.text(`Durée : ${reservation.duration} heures`);
-        doc.moveDown();
+        doc.fontSize(14).text('Détails de la transaction', { underline: true });
+        doc.moveDown(1);
+
+        doc.fontSize(11);
+        doc.text(`Reference : ${reservation.reference}`);
+        doc.text(`Salle : ${reservation.room.name}`);
+        
+        const formatOptions: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+        doc.text(`Date de debut : ${reservation.startTime.toLocaleDateString('fr-FR', formatOptions)}`);
+        doc.text(`Date de fin : ${reservation.endTime.toLocaleDateString('fr-FR', formatOptions)}`);
+        
+        const paymentMethod = reservation.payment?.method === 'CREDIT_CARD' ? 'Carte Bancaire' : 'Sur Place';
+        const paymentStatus = reservation.payment?.status === 'COMPLETED' ? '(Paye)' : '(En attente)';
+        doc.text(`Moyen de paiement : ${paymentMethod} ${paymentStatus}`);
+        
+        doc.moveDown(2);
 
         // Total
-        doc.fontSize(14).text(`Total Payé : ${reservation.totalPrice} €`, { align: 'right' });
+        doc.fontSize(16).text(`Montant total : ${reservation.totalPrice} euros`);
 
         doc.end();
 
