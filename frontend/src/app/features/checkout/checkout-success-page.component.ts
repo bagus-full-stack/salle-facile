@@ -86,40 +86,93 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
           </div>
         </div>
 
-        <div class="bg-gray-100/50 p-8 rounded-3xl border border-gray-200 flex justify-center shadow-inner ">
-          <div class="bg-white w-full max-w-sm rounded-xl shadow-lg p-8 transform rotate-1 hover:rotate-0 transition duration-300">
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 mt-8 space-y-4">
-              <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Détails de la transaction</h3>
+        <div class="bg-gray-100/50 p-4 md:p-8 rounded-3xl border border-gray-200 flex justify-center shadow-inner min-h-full items-center" style="background-image: radial-gradient(#e5e7eb 1px, transparent 1px); background-size: 20px 20px;">
+          <div class="bg-white w-full max-w-lg rounded-xl shadow-lg p-8 md:p-10 transform translate-y-2 hover:translate-y-0 transition duration-300 relative overflow-hidden">
 
-              <div class="flex justify-between items-center py-2 border-b border-gray-50">
-                <span class="text-gray-500 flex items-center gap-2">📄 Référence</span>
-                <span class="font-bold text-gray-900">{{ reservation().reference }}</span>
+            <!-- Header Reçu -->
+            <div class="flex justify-between items-start border-b border-gray-100 pb-8 mb-8">
+              <div>
+                <div class="flex items-center gap-2">
+                  <div class="bg-[#2b5e6e] p-2 rounded text-white flex-shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                  </div>
+                  <span class="font-bold text-[#2b5e6e] text-xl">Salle<span class="text-[#1da1f2]">Facile</span>.</span>
+                </div>
+                <div class="text-xs text-gray-500 font-bold mt-2">{{ reservation().reference }}</div>
               </div>
-              <div class="flex justify-between items-center py-2 border-b border-gray-50">
-                <span class="text-gray-500 flex items-center gap-2">🏠 Salle</span>
-                <span class="font-medium text-gray-900">{{ reservation().room?.name }}</span>
+              <div class="text-right">
+                <h2 class="text-4xl font-light tracking-widest text-gray-300 mb-1">REÇU</h2>
+                <div class="text-[10px] text-gray-400 uppercase tracking-widest mt-2 whitespace-nowrap">Émis le {{ reservation().createdAt | date:'dd MMM yyyy' }}</div>
               </div>
-              <div class="flex justify-between items-center py-2 border-b border-gray-50">
-                <span class="text-gray-500 flex items-center gap-2">📅 Date de début</span>
-                <span class="font-medium text-gray-900">{{ reservation().startTime | date:'dd MMM yyyy, HH:mm' }}</span>
+            </div>
+
+            <!-- Adresses -->
+            <div class="flex justify-between text-sm mb-10 gap-4">
+              <div class="text-gray-500 space-y-1">
+                <div class="text-xs font-bold uppercase tracking-wider mb-2 text-gray-400">DE</div>
+                <div class="font-bold text-gray-900 text-base">SalleFacile Inc.</div>
+                <div>12 Rue de la Paix</div>
+                <div>75002 Paris, France</div>
               </div>
-              <div class="flex justify-between items-center py-2 border-b border-gray-50">
-                <span class="text-gray-500 flex items-center gap-2">⏳ Date de fin</span>
-                <span class="font-medium text-gray-900">{{ reservation().endTime | date:'dd MMM yyyy, HH:mm' }}</span>
+              <div class="text-right text-gray-500 space-y-1">
+                <div class="text-xs font-bold uppercase tracking-wider mb-2 text-gray-400">FACTURÉ À</div>
+                <div class="font-bold text-gray-900 text-base">{{ reservation().user?.firstName }} {{ reservation().user?.lastName }}</div>
+                <div>{{ reservation().user?.email }}</div>
               </div>
-              <div class="flex justify-between items-center py-2">
-                <span class="text-gray-500 flex items-center gap-2">💳 Moyen de paiement</span>
-                <span class="font-medium text-gray-900">
-                {{ reservation().payment?.method === 'CREDIT_CARD' ? 'Carte Bancaire' : 'Sur Place' }}
-                  @if (reservation().payment?.status === 'COMPLETED') { <span class="text-green-500 text-sm ml-1">(Payé)</span> }
-                  @else { <span class="text-orange-500 text-sm ml-1">(En attente)</span> }
-              </span>
+            </div>
+
+            <!-- Table -->
+            <div class="mb-4 border-b border-gray-100 pb-6">
+              <div class="grid grid-cols-[1fr_40px_80px] gap-4 mb-4 text-sm text-gray-500 border-b border-gray-100 pb-2">
+                <div>Description</div>
+                <div class="text-center">Qté</div>
+                <div class="text-right">Total</div>
               </div>
 
-              <div class="flex justify-between items-end pt-6 mt-2">
-                <span class="text-gray-500">Montant total</span>
-                <span class="text-3xl font-bold text-[#1da1f2]">{{ reservation().totalPrice }} €</span>
+              <div class="grid grid-cols-[1fr_40px_80px] gap-4 items-start text-sm text-gray-800">
+                <div>
+                  <div class="leading-snug font-medium text-gray-900 mb-1">
+                    Location Salle "{{ reservation().room?.name }}"
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1">
+                    Du {{ reservation().startTime | date:'dd MMM yyyy, HH:mm' }} <br>
+                    Au {{ reservation().endTime | date:'dd MMM yyyy, HH:mm' }}
+                  </div>
+                </div>
+                <div class="text-center pt-0.5">1</div>
+                <div class="text-right pt-0.5">{{ reservation().totalPrice }} €</div>
               </div>
+            </div>
+
+            <!-- Totals -->
+            <div class="flex justify-between items-start pt-2">
+              <div class="text-xs text-gray-500">
+                <div class="font-bold text-gray-400 uppercase tracking-widest mb-1 text-[10px]">Moyen de paiement</div>
+                <div class="font-medium text-gray-800">
+                  {{ reservation().payment?.method === 'CREDIT_CARD' ? 'Carte Bancaire' : 'Sur Place' }}
+                  @if (reservation().payment?.status === 'COMPLETED') { <span class="text-green-500 font-normal ml-1">(Payé)</span> }
+                  @else { <span class="text-orange-500 font-normal ml-1">(En attente)</span> }
+                </div>
+              </div>
+
+              <div class="w-56 space-y-3">
+                <div class="flex justify-between text-sm text-gray-500">
+                  <span>Sous-total</span>
+                  <span>{{ reservation().totalPrice }} €</span>
+                </div>
+                <div class="flex justify-between text-sm text-gray-500 border-b border-gray-100 pb-3">
+                  <span>TVA (20%)</span>
+                  <span>Inclus</span>
+                </div>
+                <div class="flex justify-between items-center text-gray-900 pt-2">
+                  <span class="font-bold text-lg">Total Payé</span>
+                  <span class="text-xl font-bold text-[#1da1f2]">{{ reservation().totalPrice }} €</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-12 pt-6 border-t border-dashed border-gray-200 text-center text-xs text-gray-400">
+              Merci de votre confiance. Ce document vaut preuve de paiement.
             </div>
           </div>
         </div>
