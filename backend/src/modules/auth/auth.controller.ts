@@ -1,7 +1,7 @@
 import {Controller, Post, Body, UseGuards, Get, Req, Res, Patch} from '@nestjs/common';
 import * as express from 'express';
 import { AuthService } from './auth.service';
-import { LoginDto, RegisterDto, ForgotPasswordDto, ResetPasswordDto } from './dto/auth.dto';
+import { LoginDto, RegisterDto, ForgotPasswordDto, ResetPasswordDto, VerifyEmailDto } from './dto/auth.dto';
 import {AuthGuard} from "@nestjs/passport";
 import { LinkedinAuthGuard } from './linkedin-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -13,6 +13,11 @@ export class AuthController {
     @Post('register')
     async register(@Body() dto: RegisterDto) {
         return this.authService.register(dto);
+    }
+
+    @Post('verify-email')
+    async verifyEmail(@Body() dto: VerifyEmailDto) {
+        return this.authService.verifyEmail(dto.email, dto.code);
     }
 
     @Post('login')

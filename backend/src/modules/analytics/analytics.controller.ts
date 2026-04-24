@@ -17,6 +17,12 @@ export class AnalyticsController {
         return this.analyticsService.getFinancialDashboard();
     }
 
+    @Get('general')
+    @Roles(Role.SUPER_ADMIN, Role.MANAGER)
+    async getGeneralDashboard() {
+        return this.analyticsService.getGeneralDashboard();
+    }
+
     @Get('compare')
     @Roles(Role.SUPER_ADMIN, Role.MANAGER)
     async getComparativeData(

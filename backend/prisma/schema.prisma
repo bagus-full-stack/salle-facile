@@ -76,6 +76,11 @@ model User {
   role     Role    @default(USER)
   isActive Boolean @default(true)
 
+  // Email verification (OTP)
+  isEmailVerified       Boolean   @default(false)
+  verificationCode      String?
+  verificationCodeExpiry DateTime?
+
   // Relations
   reservations Reservation[]
 

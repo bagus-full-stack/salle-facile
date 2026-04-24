@@ -3,7 +3,7 @@ import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
-async function main() {
+export async function seedAdmin() {
   const email = 'admin@sallefacile.com';
   const password = 'Admin123!';
 
@@ -35,12 +35,22 @@ async function main() {
   console.log('──────────────────────────────────');
 }
 
-main()
-  .catch((e) => {
+// Fonction pour exécuter en standalone
+async function main() {
+  console.log('\n📝 Démarrage: Création de l\'administrateur...');
+  try {
+    await seedAdmin();
+  } catch (e) {
     console.error('❌ Erreur :', e);
     process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+  }
+}
+
+// Exécuter seulement si appelé directement
+if (require.main === module) {
+  main()
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
+}
 

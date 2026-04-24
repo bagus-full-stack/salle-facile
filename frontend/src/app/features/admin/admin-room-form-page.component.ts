@@ -199,7 +199,9 @@ export class AdminRoomFormPageComponent implements OnInit {
         this.roomForm.patchValue(room);
         // Si la salle a déjà des images sur le serveur, on les ajoute à l'aperçu
         if (room.images) {
-          this.imagePreviews.set(room.images.map((img: any) => img.url));
+          this.imagePreviews.set(room.images.map((img: any) =>
+            img.url.startsWith('http') ? img.url : `http://localhost:3000${img.url}`
+          ));
         }
       }
     });

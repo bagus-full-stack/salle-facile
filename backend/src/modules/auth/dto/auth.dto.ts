@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength, IsEnum, IsOptional } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength, IsEnum, IsOptional, Length } from 'class-validator';
 import { AccountType } from '@prisma/client';
 
 export class LoginDto {
@@ -32,6 +32,15 @@ export class RegisterDto {
     @IsOptional()
     @IsString()
     companyName?: string;
+}
+
+export class VerifyEmailDto {
+    @IsEmail()
+    email: string;
+
+    @IsString()
+    @Length(6, 6, { message: 'Le code doit être composé de 6 chiffres' })
+    code: string;
 }
 
 export class ForgotPasswordDto {

@@ -32,7 +32,11 @@ export class AuthService {
         // 2. Hacher le mot de passe
         const hashedPassword = await bcrypt.hash(dto.password, 10);
 
-        // 3. Créer l'utilisateur
+        // 3. Générer un code OTP aléatoire (6 chiffres)
+        const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+        const verificationCodeExpiry = new Date(Date.now() + 15 * 60 * 1000); // Expire dans 15 minutes
+
+        // 4. Créer l'utilisateur INACTIF (en attente de vérification email)
         const user = await this.prisma.user.create({
             data: {
                 email: dto.email,
@@ -42,15 +46,22 @@ export class AuthService {
                 accountType: dto.accountType,
                 companyName: dto.accountType === 'PROFESSIONAL' ? dto.companyName : null,
                 role: 'USER', // Rôle par défaut
-                isActive: true,
+                isActive: false, // 🔴 INACTIF jusqu'à vérification email
+                isEmailVerified: false,
+                verificationCode,
+                verificationCodeExpiry,
             },
         });
 
-        // 4. Envoyer l'email de bienvenue via un événement
-        this.eventEmitter.emit('auth.welcome', { user });
+        // 5. Émettre un événement pour envoyer l'email de vérification
+        this.eventEmitter.emit('auth.email-verification', { user, code: verificationCode });
 
-        // 5. Retourner le token directement après l'inscription
-        return this.generateToken(user);
+        // 6. Retourner un message pour indiquer à l'utilisateur de vérifier son email
+        return {
+            message: 'Compte créé avec succès. Vérifiez votre email pour activer votre compte.',
+            email: user.email,
+            requiresVerification: true,
+        };
     }
 
     async login(dto: LoginDto) {
@@ -69,6 +80,51 @@ export class AuthService {
         }
 
         return this.generateToken(user);
+    }
+
+    // ==========================================
+    // 📧 VÉRIFICATION D'EMAIL (OTP)
+    // ==========================================
+
+    async verifyEmail(email: string, code: string) {
+        // 1. Trouver l'utilisateur par email
+        const user = await this.prisma.user.findUnique({
+            where: { email },
+        });
+
+        if (!user) {
+            throw new BadRequestException('Email introuvable.');
+        }
+
+        if (user.isEmailVerified) {
+            throw new BadRequestException('Cet email a déjà été vérifié.');
+        }
+
+        // 2. Vérifier le code et sa date d'expiration
+        if (user.verificationCode !== code) {
+            throw new BadRequestException('Code de vérification incorrect.');
+        }
+
+        if (!user.verificationCodeExpiry || user.verificationCodeExpiry < new Date()) {
+            throw new BadRequestException('Le code de vérification a expiré.');
+        }
+
+        // 3. Activer l'utilisateur et nettoyer le code
+        const updatedUser = await this.prisma.user.update({
+            where: { id: user.id },
+            data: {
+                isActive: true,
+                isEmailVerified: true,
+                verificationCode: null,
+                verificationCodeExpiry: null,
+            },
+        });
+
+        // 4. Émettre un événement de bienvenue
+        this.eventEmitter.emit('auth.welcome', { user: updatedUser });
+
+        // 5. Retourner le token JWT
+        return this.generateToken(updatedUser);
     }
 
     // ==========================================

@@ -3,6 +3,125 @@
   <component name="ChangeListManager">
     <list default="true" id="65ae8793-3702-43a2-8a33-941d45b4c7e3" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/1/1259" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/1/1259" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/1/2619" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/1/2619" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/1/2619_vm" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/1/2619_vm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/1/2696" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/1/2696" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1247" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1247" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1247_fsm" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1247_fsm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1249" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1249" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1249_fsm" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1249_fsm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1259" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1259" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1259_fsm" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1259_fsm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1259_vm" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/1259_vm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17128" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17138" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17139" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17140" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17199" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17216" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17217" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17218" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17220" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17237" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17238" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17239" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17241" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17251" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17252" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17253" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17255" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17261" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17262" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17263" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17265" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17274" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17275" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17276" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17278" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17298" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17299" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17300" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17302" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17314" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17315" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17316" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17318" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17326" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17327" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17328" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17330" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17335" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17336" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17337" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17339" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17340" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17341" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17342" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17343" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17344" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17345" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17346" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/17347" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2579" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2579" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2604" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2604" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2606" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2606" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2606_fsm" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2606_fsm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2608" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2608" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2608_fsm" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2608_fsm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2609" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2609" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2609_vm" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2609_vm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2610" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2610" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2610_fsm" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2610_fsm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2615" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2615" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2615_vm" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2615_vm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2619" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2619" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2619_fsm" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2619_fsm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2619_vm" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2619_vm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2620" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2620" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2656" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2656" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2657" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2657" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2658" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2658" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2659" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2659" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2662" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2662" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2663" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2663" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2664" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2664" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2665" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2665" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2666" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2666" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2667" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2667" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2673" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2673" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2674" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2674" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2678" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2678" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2679" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2679" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2684" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2684" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2685" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2685" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2696" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2696" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2699" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2699" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2701" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2701" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2702" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2702" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2703" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2703" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2704" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2704" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2840" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2840" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2840_vm" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2840_vm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2841" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/2841" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/3394" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/3394" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/3394_vm" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/3394_vm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/3455" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/3455" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/3501" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/3501" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/3502" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/3502" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/3503" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/3503" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/3534" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/3534" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/pg_internal.init" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/base/16384/pg_internal.init" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/global/1260" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/global/1260" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/global/1262" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/global/1262" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/global/2671" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/global/2671" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/global/2672" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/global/2672" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/global/pg_control" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/global/pg_control" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/global/pg_internal.init" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/global/pg_internal.init" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/pg_wal/000000010000000000000005" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/pg_wal/000000010000000000000006" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/pg_xact/0000" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/pg_xact/0000" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sallefacile-data/18/docker/postmaster.pid" beforeDir="false" afterPath="$PROJECT_DIR$/sallefacile-data/18/docker/postmaster.pid" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,8 +138,8 @@
   </component>
   <component name="CopilotUserSelectedModel">
     <selectedModels>
-      <entry key="chat-panel" value="Claude Haiku 4.5" />
-      <entry key="agent-panel" value="Claude Haiku 4.5" />
+      <entry key="agent-panel" value="Gemini 3.1 Pro" />
+      <entry key="chat-panel" value="Gemini 3.1 Pro" />
     </selectedModels>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -93,8 +212,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.backend" />
         <item itemvalue="npm.frontend" />
+        <item itemvalue="npm.backend" />
       </list>
     </recent_temporary>
   </component>
@@ -119,6 +238,8 @@
       <workItem from="1774133137420" duration="10287000" />
       <workItem from="1774599766303" duration="2379000" />
       <workItem from="1774704746098" duration="1709000" />
+      <workItem from="1775745521693" duration="80000" />
+      <workItem from="1777018207305" duration="5519000" />
     </task>
     <servers />
   </component>

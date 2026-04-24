@@ -148,4 +148,135 @@ export class AnalyticsService {
             }
         };
     }
+
+    async getGeneralDashboard() {
+        // Obtenir la fentre pour ce mois et le mois prcdent
+        const now = new Date();
+        const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        
+        // --- 1. KPIs ---
+        // Salles
+        const totalRooms = await this.prisma.room.count();
+        const activeRooms = await this.prisma.room.count({ where: { isActive: true } });
+
+        // Utilisateurs (Nouveaux)
+        const newUsersThisMonth = await this.prisma.user.count({ where: { createdAt: { gte: startOfThisMonth } } });
+        const newUsersLastMonth = await this.prisma.user.count({ where: { createdAt: { gte: startOfLastMonth, lt: startOfThisMonth } } });
+
+        // Rservations 
+        const resThisMonth = await this.prisma.reservation.count({ where: { startTime: { gte: startOfThisMonth }, status: 'CONFIRMED' } });
+        const resLastMonth = await this.prisma.reservation.count({ where: { startTime: { gte: startOfLastMonth, lt: startOfThisMonth }, status: 'CONFIRMED' } });
+
+        // Revenus
+        const revThisMonthAggr = await this.prisma.payment.aggregate({
+            _sum: { amount: true },
+            where: { status: 'COMPLETED', createdAt: { gte: startOfThisMonth } },
+        });
+        const revLastMonthAggr = await this.prisma.payment.aggregate({
+            _sum: { amount: true },
+            where: { status: 'COMPLETED', createdAt: { gte: startOfLastMonth, lt: startOfThisMonth } },
+        });
+
+        const revThisMonth = Number(revThisMonthAggr._sum.amount || 0);
+        const revLastMonth = Number(revLastMonthAggr._sum.amount || 0);
+
+        // Variations en pourcentage
+        const calcVar = (current: number, previous: number) => {
+            if (previous === 0) return current > 0 ? 100 : 0;
+            return ((current - previous) / previous) * 100;
+        };
+
+        const resVar = calcVar(resThisMonth, resLastMonth);
+        const revVar = calcVar(revThisMonth, revLastMonth);
+        const usersVar = calcVar(newUsersThisMonth, newUsersLastMonth);
+
+        // --- 2. Graphes des 6 derniers mois (Toutes les salles confondues) ---
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
+        sixMonthsAgo.setDate(1);
+        sixMonthsAgo.setHours(0, 0, 0, 0);
+
+        const reservations = await this.prisma.reservation.findMany({
+            where: {
+                status: 'CONFIRMED',
+                startTime: { gte: sixMonthsAgo }
+            },
+            select: { startTime: true, duration: true, totalPrice: true }
+        });
+
+        const monthLabels: string[] = [];
+        const monthlyRevenues: number[] = [0, 0, 0, 0, 0, 0];
+        const monthlyHours: number[] = [0, 0, 0, 0, 0, 0];
+
+        for (let i = 0; i < 6; i++) {
+            const d = new Date(sixMonthsAgo);
+            d.setMonth(d.getMonth() + i);
+            monthLabels.push(d.toLocaleString('fr-FR', { month: 'short' }).replace('.', '')); 
+        }
+
+        reservations.forEach(res => {
+            const monthDiff = (res.startTime.getFullYear() - sixMonthsAgo.getFullYear()) * 12
+                + res.startTime.getMonth() - sixMonthsAgo.getMonth();
+
+            if (monthDiff >= 0 && monthDiff < 6) {
+                monthlyRevenues[monthDiff] += Number(res.totalPrice);
+                monthlyHours[monthDiff] += res.duration;
+            }
+        });
+
+        const maxHoursPerRoom = 200; 
+        const totalMaxHours = Math.max(activeRooms * maxHoursPerRoom, 1);
+        const monthlyOccupancy = monthlyHours.map(h => Math.min(Math.round((h / totalMaxHours) * 100), 100));
+
+        // --- 3. Table KPIs Detail (Ce mois vs mois prcedent) ---
+        // (Pour simplifier on renvoie juste les chiffres du mois actuel et l'evolution)
+        const avgOccThisMonth = monthlyOccupancy[5] || 0;
+        const avgOccLastMonth = monthlyOccupancy[4] || 0;
+        const occVar = avgOccThisMonth - avgOccLastMonth;
+
+        return {
+            summary: {
+                reservations: { value: resThisMonth, variation: Math.round(resVar) },
+                revenue: { value: revThisMonth, variation: Math.round(revVar) },
+                newUsers: { value: newUsersThisMonth, variation: Math.round(usersVar) },
+                rooms: { active: activeRooms, total: totalRooms }
+            },
+            charts: {
+                labels: monthLabels,
+                revenues: monthlyRevenues,
+                occupancy: monthlyOccupancy
+            },
+            radar: {
+                // Rempli avec des valeurs simules ou drives globales pour l'Analyse Globale
+                labels: ['POPULARIT', 'DURE MOY.', 'RENTABILIT', 'VOLUME (Rsas)', 'NOTE CLIENT'],
+                data: [
+                   Math.min(resThisMonth * 5, 100), 
+                   70, 
+                   Math.min(revThisMonth / 100, 100) || 50, 
+                   60, 
+                   92 // 92% moyenne de satisfaction
+                ]
+            },
+            detailedKpis: {
+                thisMonth: {
+                    reservations: resThisMonth,
+                    revenue: revThisMonth,
+                    occupancy: avgOccThisMonth,
+                    popularSlot: '14:00 - 16:00' // Idalement  calculer
+                },
+                lastMonth: {
+                    reservations: resLastMonth,
+                    revenue: revLastMonth,
+                    occupancy: avgOccLastMonth,
+                    popularSlot: '09:00 - 12:00'
+                },
+                variations: {
+                    reservations: calcVar(resThisMonth, resLastMonth).toFixed(1),
+                    revenue: calcVar(revThisMonth, revLastMonth).toFixed(1),
+                    occupancy: occVar
+                }
+            }
+        };
+    }
 }

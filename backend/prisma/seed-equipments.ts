@@ -2,9 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-async function main() {
-  console.log('Seeding equipments...');
-
+export async function seedEquipments() {
   // Créer les équipements standards
   const equipments = await Promise.all([
     prisma.equipment.upsert({
@@ -68,12 +66,21 @@ async function main() {
   console.log(`✅ ${equipments.length} équipements créés/mis à jour`);
 }
 
-main()
-  .catch((e) => {
+// Fonction pour exécuter en standalone
+async function main() {
+  console.log('📝 Démarrage: Seeding equipments...');
+  try {
+    await seedEquipments();
+  } catch (e) {
     console.error('❌ Erreur:', e);
     process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+  }
+}
 
+// Exécuter seulement si appelé directement
+if (require.main === module) {
+  main()
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
+}

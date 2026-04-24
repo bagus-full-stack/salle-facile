@@ -18,6 +18,7 @@ export interface Room {
 export class RoomService {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:3000/rooms';
+  private apiBaseUrl = 'http://localhost:3000';
 
   // ⚡️ Gestion de l'état avec les Signals
   public currentRoom = signal<Room | null>(null);
@@ -25,6 +26,27 @@ export class RoomService {
   public error = signal<string | null>(null);
   public roomsList = signal<Room[]>([]);
   public isListLoading = signal<boolean>(false);
+
+  /**
+   * 🔧 Transforme les URLs relatives en URLs absolues
+   * Ex: /uploads/rooms/room-xxx.jpg → http://localhost:3000/uploads/rooms/room-xxx.jpg
+   */
+  private buildAbsoluteImageUrls(room: Room): Room {
+    return {
+      ...room,
+      images: room.images.map(img => ({
+        ...img,
+        url: img.url.startsWith('http') ? img.url : `${this.apiBaseUrl}${img.url}`
+      }))
+    };
+  }
+
+  /**
+   * 🔧 Applique la transformation à une liste de salles
+   */
+  private buildAbsoluteImageUrlsForList(rooms: Room[]): Room[] {
+    return rooms.map(room => this.buildAbsoluteImageUrls(room));
+  }
 
   // Méthodes CRUD Admin
   createRoom(roomData: FormData) {
@@ -61,7 +83,7 @@ export class RoomService {
 
     this.http.get<Room>(`${this.apiUrl}/${id}`).subscribe({
       next: (room) => {
-        this.currentRoom.set(room);
+        this.currentRoom.set(this.buildAbsoluteImageUrls(room));
         this.isLoading.set(false);
       },
       error: (err) => {
@@ -85,7 +107,7 @@ export class RoomService {
 
     this.http.get<Room[]>(url).subscribe({
       next: (rooms) => {
-        this.roomsList.set(rooms);
+        this.roomsList.set(this.buildAbsoluteImageUrlsForList(rooms));
         this.isListLoading.set(false);
       },
       error: (err) => {
