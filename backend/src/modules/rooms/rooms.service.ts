@@ -1,122 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma.service';
-import {CreateRoomDto} from "./dto/create-room.dto";
-import {RoomCategory} from "@prisma/client";
 
 @Injectable()
 export class RoomsService {
     constructor(private prisma: PrismaService) {}
 
-    async getRoomById(id: string) {
-        // Requête Prisma pour récupérer la salle avec ses images et équipements
-        const room = await this.prisma.room.findUnique({
-            where: { id },
-            include: {
-                images: true,
-                equipments: true,
-            },
-        });
+    // ==========================================
+    // 🔍 LECTURE & RECHERCHE (Catalogue)
+    // ==========================================
 
-        if (!room) {
-            throw new NotFoundException(`La salle avec l'ID ${id} est introuvable.`);
-        }
-
-        return room;
-    }
-
-    async getRoomAvailability(roomId: string, startDate: Date, endDate: Date) {
-        // On cherche les réservations qui se chevauchent avec la période demandée
-        const reservations = await this.prisma.reservation.findMany({
-            where: {
-                roomId,
-                status: { in: ['CONFIRMED', 'PENDING'] }, // On ignore les annulées
-                startTime: { lte: endDate },
-                endTime: { gte: startDate },
-            },
-            select: {
-                startTime: true,
-                endTime: true,
-            },
-        });
-
-        return reservations; // Renvoie les créneaux indisponibles
-    }
-
-    async createRoom(dto: CreateRoomDto, files: Express.Multer.File[]) {
-        // 1. Parsing des équipements (depuis le FormData)
-        const equipmentIdsArray: string[] = dto.equipmentIds ? JSON.parse(dto.equipmentIds) : [];
-
-        // 2. Traitement des images (Simulation d'upload S3 / Stockage local)
-        // Dans la vraie vie, on uploaderait les buffers vers AWS S3 ou Google Cloud Storage ici
-        const uploadedImages = files.map((file, index) => ({
-            url: `/uploads/${Date.now()}-${file.originalname}`, // Lien fictif de stockage
-            isPrimary: index === 0, // La première image devient la miniature principale
-        }));
-
-        // 3. Création transactionnelle dans Prisma
-        const newRoom = await this.prisma.room.create({
-            data: {
-                name: dto.name,
-                description: dto.description,
-                category: dto.category,
-                capacity: dto.capacity,
-                surfaceArea: dto.surfaceArea,
-                hourlyPrice: dto.hourlyPrice,
-                halfDayPrice: dto.halfDayPrice,
-                fullDayPrice: dto.fullDayPrice,
-
-                // Connexion aux équipements existants
-                equipments: {
-                    connect: equipmentIdsArray.map(id => ({ id })),
-                },
-
-                // Création des images liées
-                images: {
-                    create: uploadedImages,
-                }
-            },
-            include: {
-                images: true,
-                equipments: true,
-            }
-        });
-
-        return newRoom;
-    }
-
-    // async findAll(category?: RoomCategory, minCapacity?: number) {
-    //     // On construit dynamiquement l'objet de filtre
-    //     const whereClause: any = {
-    //         isActive: true, // On ne montre que les salles actives au public
-    //     };
-    //
-    //     if (category) {
-    //         whereClause.category = category;
-    //     }
-    //
-    //     if (minCapacity) {
-    //         whereClause.capacity = { gte: Number(minCapacity) }; // gte = Greater Than or Equal
-    //     }
-    //
-    //     // Requête optimisée : on ne ramène que l'image principale pour la liste
-    //     return this.prisma.room.findMany({
-    //         where: whereClause,
-    //         include: {
-    //             images: {
-    //                 where: { isPrimary: true },
-    //                 take: 1
-    //             },
-    //             equipments: {
-    //                 take: 3 // On limite à 3 équipements max pour les badges de la carte
-    //             }
-    //         },
-    //         orderBy: { createdAt: 'desc' },
-    //         take: 6 // On limite à 6 salles pour la page d'accueil
-    //     });
-    // }
-
-    async findAll(category?: RoomCategory, minCapacity?: number, search?: string) {
-        const where: any = { isActive: true };
+    async findAll(category?: string, minCapacity?: string | number, search?: string) {
+        const where: any = {};
 
         if (category) where.category = category;
         if (minCapacity) where.capacity = { gte: Number(minCapacity) };
@@ -129,7 +24,274 @@ export class RoomsService {
 
         return this.prisma.room.findMany({
             where,
-            include: { images: { where: { isPrimary: true } } }
+            orderBy: { name: 'asc' },
+            include: {
+                images: { orderBy: { isPrimary: 'desc' } },
+                equipments: true
+            }
         });
+    }
+
+    async findOne(id: string) {
+        const room = await this.prisma.room.findUnique({
+            where: { id },
+            include: { images: true, equipments: true }
+        });
+
+        if (!room) throw new NotFoundException('Salle introuvable');
+        return room;
+    }
+
+    // ⚡️ LA MÉTHODE SAUVE : Vérification des conflits pour le tunnel de réservation
+    async getRoomAvailability(id: string, start: Date, end: Date) {
+        // On cherche s'il existe une réservation confirmée ou en attente qui chevauche ce créneau
+        const overlappingReservations = await this.prisma.reservation.findMany({
+            where: {
+                roomId: id,
+                status: { in: ['CONFIRMED', 'PENDING', 'BLOCKED'] },
+                // La logique d'intersection : la résa existante commence AVANT la fin souhaitée,
+                // ET elle se termine APRÈS le début souhaité.
+                startTime: { lt: end },
+                endTime: { gt: start },
+            }
+        });
+
+        // Si le tableau est vide (length === 0), la salle est disponible
+        return {
+            available: overlappingReservations.length === 0,
+            conflicts: overlappingReservations.length
+        };
+    }
+
+    // Récupérer les réservations pour le calendrier
+    async getRoomReservations(id: string, start: Date, end: Date) {
+        return this.prisma.reservation.findMany({
+            where: {
+                roomId: id,
+                status: { in: ['CONFIRMED', 'PENDING', 'BLOCKED'] },
+                startTime: { lt: end },
+                endTime: { gt: start },
+            },
+            select: {
+                id: true,
+                startTime: true,
+                endTime: true,
+                status: true
+            }
+        });
+    }
+
+    // Get all available equipments
+    async getEquipments() {
+        return this.prisma.equipment.findMany({
+            select: {
+                id: true,
+                name: true,
+                iconRef: true
+            }
+        });
+    }
+
+    // ==========================================
+    // ✍️ ÉCRITURE & GESTION DES FICHIERS (Admin)
+    // ==========================================
+
+    async createRoom(dto: any, files?: Array<Express.Multer.File>) {
+        const roomData = {
+            name: dto.name,
+            description: dto.description,
+            capacity: Number(dto.capacity),
+            surfaceArea: Number(dto.surfaceArea),
+            category: dto.category,
+            hourlyPrice: Number(dto.hourlyPrice),
+            halfDayPrice: dto.halfDayPrice ? Number(dto.halfDayPrice) : 0,
+            fullDayPrice: Number(dto.fullDayPrice),
+            isActive: dto.isActive === 'true' || dto.isActive === true,
+        };
+
+        // Gestion des équipements
+        let equipmentIds: string[] = [];
+        if (dto.equipments) {
+            // Normalise en tableau si c'est une string unique ou JSON
+            if (typeof dto.equipments === 'string') {
+                 try {
+                     // Cas où c'est un JSON stringifié "[id1, id2]"
+                     if (dto.equipments.startsWith('[')) {
+                         equipmentIds = JSON.parse(dto.equipments);
+                     } else {
+                         equipmentIds = [dto.equipments];
+                     }
+                 } catch (e) {
+                     equipmentIds = [dto.equipments];
+                 }
+            } else if (Array.isArray(dto.equipments)) {
+                equipmentIds = dto.equipments;
+            }
+        }
+
+        // Vérifier que les équipements existent avant de les connecter
+        let validEquipmentIds: string[] = [];
+        if (equipmentIds.length > 0) {
+            const existingEquipments = await this.prisma.equipment.findMany({
+                where: { id: { in: equipmentIds } },
+                select: { id: true }
+            });
+            validEquipmentIds = existingEquipments.map(e => e.id);
+        }
+
+        // 2. Formatage des images
+        const imagesData = this.formatImagesData(files);
+
+        // 3. Sauvegarde en base avec Prisma
+        return this.prisma.room.create({
+            data: {
+                ...roomData,
+                images: imagesData.length > 0 ? { create: imagesData } : undefined,
+                equipments: validEquipmentIds.length > 0 ? { 
+                    connect: validEquipmentIds.map(id => ({ id })) 
+                } : undefined
+            },
+            include: { images: true, equipments: true }
+        });
+    }
+
+    async updateRoom(id: string, dto: any, files?: Array<Express.Multer.File>) {
+        // Vérifier si la salle existe d'abord
+        await this.findOne(id);
+
+        // 1. Formatage sécurisé (ne met à jour que ce qui est fourni)
+        const updateData: any = {};
+        if (dto.name !== undefined) updateData.name = dto.name;
+        if (dto.description !== undefined) updateData.description = dto.description;
+        if (dto.capacity !== undefined) updateData.capacity = Number(dto.capacity);
+        if (dto.surfaceArea !== undefined) updateData.surfaceArea = Number(dto.surfaceArea);
+        if (dto.category !== undefined) updateData.category = dto.category;
+        
+        if (dto.hourlyPrice !== undefined) updateData.hourlyPrice = Number(dto.hourlyPrice);
+        if (dto.halfDayPrice !== undefined) updateData.halfDayPrice = Number(dto.halfDayPrice);
+        if (dto.fullDayPrice !== undefined) updateData.fullDayPrice = Number(dto.fullDayPrice);
+
+        if (dto.isActive !== undefined) {
+            updateData.isActive = dto.isActive === 'true' || dto.isActive === true;
+        }
+
+        // Gestion des équipements (mise à jour complète de la liste)
+        if (dto.equipments !== undefined) {
+             let equipmentIds: string[] = [];
+             if (typeof dto.equipments === 'string') {
+                 try {
+                     if (dto.equipments.startsWith('[')) {
+                         equipmentIds = JSON.parse(dto.equipments);
+                     } else if (dto.equipments === "") {
+                         equipmentIds = [];
+                     } else {
+                         equipmentIds = [dto.equipments];
+                     }
+                 } catch (e) {
+                     equipmentIds = [dto.equipments];
+                 }
+            } else if (Array.isArray(dto.equipments)) {
+                equipmentIds = dto.equipments;
+            } else if (dto.equipments === null) {
+                equipmentIds = [];
+            }
+            
+            // On utilise 'set' pour remplacer la sélection actuelle par la nouvelle
+            updateData.equipments = { set: equipmentIds.map(id => ({ id })) };
+        }
+
+        // 2. Formatage des nouvelles images éventuelles
+        const imagesData = this.formatImagesData(files);
+
+        // 3. Mise à jour transactionnelle
+        const dataToUpdate: any = {
+            ...updateData
+        };
+
+        // Ajoute les images seulement s'il y en a de nouvelles
+        if (imagesData.length > 0) {
+            dataToUpdate.images = { create: imagesData };
+        }
+
+        return this.prisma.room.update({
+            where: { id },
+            data: dataToUpdate,
+            include: { images: true, equipments: true }
+        });
+    }
+
+    // Bloquer une salle (Admin)
+    async blockRoom(id: string, start: Date, end: Date, reason: string, adminUserId: string) {
+        // Vérifier si la salle existe
+        await this.findOne(id);
+
+        const duration = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+
+        console.log('[blockRoom Service] Vérification des conflits de blocage...');
+        // Vérifier s'il existe déjà un BLOCKED qui chevauche cette plage
+        const overlappingBlocks = await this.prisma.reservation.findMany({
+            where: {
+                roomId: id,
+                status: 'BLOCKED',
+                startTime: { lt: end },
+                endTime: { gt: start }
+            }
+        });
+
+        if (overlappingBlocks.length > 0) {
+            console.log('[blockRoom Service] ❌ CONFLIT: Un blocage existe déjà sur cette plage');
+            console.log('[blockRoom Service] Conflits:', overlappingBlocks);
+            throw new ConflictException(
+                `Un ou plusieurs créneaux sont déjà bloqués sur cette période (${overlappingBlocks.length} conflit(s))`
+            );
+        }
+        console.log('[blockRoom Service] ✅ Aucun conflit détecté. Création du blocage...');
+
+        console.log('[blockRoom Service] ===== CREATING BLOCK =====');
+        console.log('[blockRoom Service] roomId:', id);
+        console.log('[blockRoom Service] adminUserId:', adminUserId);
+        console.log('[blockRoom Service] start:', start);
+        console.log('[blockRoom Service] start ISO:', start.toISOString());
+        console.log('[blockRoom Service] end:', end);
+        console.log('[blockRoom Service] end ISO:', end.toISOString());
+        console.log('[blockRoom Service] duration (hours):', duration);
+        console.log('[blockRoom Service] reason:', reason);
+
+        return this.prisma.reservation.create({
+            data: {
+                reference: `#BLK-${Date.now()}`,
+                roomId: id,
+                userId: adminUserId,
+                startTime: start,
+                endTime: end,
+                status: 'BLOCKED',
+                notes: reason,
+                duration: duration,
+                subtotal: 0,
+                taxAmount: 0,
+                totalPrice: 0, 
+            }
+        }).then(result => {
+            console.log('[blockRoom Service] ===== BLOCK CREATED SUCCESS =====');
+            console.log('[blockRoom Service] result:', JSON.stringify(result));
+            return result;
+        }).catch(error => {
+            console.error('[blockRoom Service] ===== BLOCK CREATION FAILED =====');
+            console.error('[blockRoom Service] error:', error);
+            throw error;
+        });
+    }
+
+    // ==========================================
+    // 🛠 UTILITAIRES
+    // ==========================================
+
+    private formatImagesData(files?: Array<Express.Multer.File>) {
+        if (!files || files.length === 0) return [];
+
+        return files.map((file, index) => ({
+            url: `/uploads/rooms/${file.filename}`,
+            isPrimary: index === 0 // La première image de l'upload devient la principale
+        }));
     }
 }

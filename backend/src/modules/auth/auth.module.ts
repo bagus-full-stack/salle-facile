@@ -6,12 +6,15 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { SharedModule } from '../../shared/shared.module';
 import {GoogleStrategy} from "./google.strategy";
-import {LinkedinStrategy} from "./linkedin.strategy"; // Contient ton PrismaService
+import {LinkedinStrategy} from "./linkedin.strategy"; 
+import { AuthListener } from './auth.listener';
+import { NotificationsModule } from '../notifications/notifications.module'; // Import NotificationsModule
 
 @Module({
     imports: [
         SharedModule,
         PassportModule,
+        NotificationsModule, // Needed for MailService via AuthListener indirect? No, AuthListener injects MailService directly if imported.
         // Configuration du générateur de Token
         JwtModule.register({
             secret: process.env.JWT_SECRET || 'MA_CLE_SECRETE_TRES_COMPLEXE_A_CHANGER_EN_PROD',
@@ -19,7 +22,7 @@ import {LinkedinStrategy} from "./linkedin.strategy"; // Contient ton PrismaServ
         }),
     ],
     controllers: [AuthController],
-    providers: [AuthService, JwtStrategy, GoogleStrategy, LinkedinStrategy],
+    providers: [AuthService, JwtStrategy, GoogleStrategy, LinkedinStrategy, AuthListener],
     exports: [AuthService],
 })
 export class AuthModule {}

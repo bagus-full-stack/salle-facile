@@ -23,7 +23,7 @@ export class ReservationsService {
         const conflict = await this.prisma.reservation.findFirst({
             where: {
                 roomId,
-                status: { in: ['CONFIRMED', 'PENDING'] },
+                status: { in: ['CONFIRMED', 'PENDING', 'BLOCKED'] },
                 startTime: { lt: end },
                 endTime: { gt: start },
             },
@@ -40,7 +40,46 @@ export class ReservationsService {
         }
 
         const durationHours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
-        const totalPrice = Number(room.hourlyPrice) * durationHours;
+        let remainingHoursForCalc = durationHours;
+        
+        let fullDaysCost = 0;
+        let halfDaysCost = 0;
+        let hoursCost = 0;
+
+        const fullDayPrice = Number(room.fullDayPrice);
+        const halfDayPrice = Number(room.halfDayPrice);
+        const hourlyPrice = Number(room.hourlyPrice);
+
+        // 1. Journées complètes (>= 8h)
+        while (remainingHoursForCalc >= 8) {
+            fullDaysCost += fullDayPrice;
+            remainingHoursForCalc -= 8;
+        }
+
+        // 2. Demi-journées (>= 4h)
+        if (remainingHoursForCalc >= 4) {
+            halfDaysCost += halfDayPrice;
+            remainingHoursForCalc -= 4;
+        }
+
+        // 3. Heures restantes (< 4h)
+        if (remainingHoursForCalc > 0) {
+            hoursCost += remainingHoursForCalc * hourlyPrice;
+        }
+
+        // Optimisations (plafonnement)
+        if (hoursCost > halfDayPrice) {
+            halfDaysCost += halfDayPrice;
+            hoursCost = 0;
+        }
+
+        if ((halfDaysCost + hoursCost) > fullDayPrice) {
+            fullDaysCost += fullDayPrice;
+            halfDaysCost = 0;
+            hoursCost = 0;
+        }
+
+        const totalPrice = fullDaysCost + halfDaysCost + hoursCost;
 
         // 3. Création transactionnelle (Réservation + Paiement)
         const result = await this.prisma.$transaction(async (tx) => {
@@ -94,6 +133,23 @@ export class ReservationsService {
                 payment: { select: { status: true } }
             }
         });
+    }
+
+    async getReservationById(reservationId: string, userId: string) {
+        const reservation = await this.prisma.reservation.findUnique({
+            where: { id: reservationId },
+            include: {
+                user: { select: { email: true } },
+                room: { select: { name: true } },
+                payment: { select: { method: true, status: true } }
+            }
+        });
+
+        if (!reservation || reservation.userId !== userId) {
+            throw new NotFoundException("Réservation introuvable ou accès refusé.");
+        }
+
+        return reservation;
     }
 
     async cancelReservation(reservationId: string, userId: string) {

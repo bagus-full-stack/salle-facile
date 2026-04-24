@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength, IsEnum, IsOptional } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength, IsEnum, IsOptional, Length } from 'class-validator';
 import { AccountType } from '@prisma/client';
 
 export class LoginDto {
@@ -29,11 +29,31 @@ export class RegisterDto {
     @IsEnum(AccountType)
     accountType: AccountType; // 'INDIVIDUAL' | 'PROFESSIONAL'
 
-    @IsString()
     @IsOptional()
+    @IsString()
     companyName?: string;
+}
+
+export class VerifyEmailDto {
+    @IsEmail()
+    email: string;
 
     @IsString()
-    @IsOptional()
-    siret?: string;
+    @Length(6, 6, { message: 'Le code doit être composé de 6 chiffres' })
+    code: string;
+}
+
+export class ForgotPasswordDto {
+    @IsEmail()
+    email: string;
+}
+
+export class ResetPasswordDto {
+    @IsString()
+    @IsNotEmpty()
+    token: string;
+
+    @IsString()
+    @MinLength(8, { message: 'Le mot de passe doit contenir au moins 8 caractères' })
+    newPassword: string;
 }

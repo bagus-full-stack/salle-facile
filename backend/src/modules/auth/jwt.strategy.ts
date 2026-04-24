@@ -16,6 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     // Cette méthode est appelée AUTOMATIQUEMENT si le token est valide
     async validate(payload: any) {
+        console.log('Validating JWT payload:', payload);
         // Le 'payload' est le contenu décodé de notre JWT.
         // Ce que l'on retourne ici sera injecté par NestJS directement dans "req.user" !
         return {

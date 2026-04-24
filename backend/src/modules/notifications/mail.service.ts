@@ -5,7 +5,8 @@ import { MailerService } from '@nestjs-modules/mailer';
 export class MailService {
     private readonly logger = new Logger(MailService.name);
 
-    constructor(private mailerService: MailerService) {}
+    constructor(private mailerService: MailerService) {
+    }
 
     async sendReservationConfirmation(user: any, reservation: any, room: any) {
         try {
@@ -19,7 +20,7 @@ export class MailService {
                     roomName: room.name,
                     reference: reservation.reference,
                     date: reservation.startTime.toLocaleDateString('fr-FR'),
-                    time: reservation.startTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+                    time: reservation.startTime.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'}),
                     price: reservation.totalPrice,
                 },
             });
@@ -43,6 +44,60 @@ export class MailService {
             this.logger.log(`Email d'annulation envoyé à ${user.email}`);
         } catch (error) {
             this.logger.error(`Erreur d'envoi d'email d'annulation`, error);
+        }
+    }
+
+    async sendPasswordResetLink(user: any, token: string) {
+        const resetLink = `http://localhost:4200/reset-password?token=${token}`;
+        try {
+            await this.mailerService.sendMail({
+                to: user.email,
+                subject: `Réinitialisation de votre mot de passe 🔒`,
+                template: './reset-password', // Créez ce template .hbs
+                context: {
+                    firstName: user.firstName,
+                    resetLink: resetLink,
+                },
+            });
+            this.logger.log(`Email de réinitialisation envoyé à ${user.email}`);
+        } catch (error) {
+            this.logger.error(`Erreur lors de l'envoi de l'email de réinitialisation`, error);
+        }
+    }
+
+    async sendVerificationEmail(user: any, code: string) {
+        try {
+            await this.mailerService.sendMail({
+                to: user.email,
+                subject: `Vérifiez votre email - SalleFacile 📧`,
+                template: './verification',
+                context: {
+                    firstName: user.firstName,
+                    email: user.email,
+                    code: code,
+                    currentYear: new Date().getFullYear(),
+                },
+            });
+            this.logger.log(`Email de vérification envoyé à ${user.email}`);
+        } catch (error) {
+            this.logger.error(`Erreur lors de l'envoi de l'email de vérification`, error);
+        }
+    }
+
+    async sendWelcomeEmail(user: any) {
+        try {
+            await this.mailerService.sendMail({
+                to: user.email,
+                subject: `Bienvenue sur SalleFacile ! 🎉`,
+                template: './welcome',
+                context: {
+                    firstName: user.firstName,
+                    currentYear: new Date().getFullYear(),
+                },
+            });
+            this.logger.log(`Email de bienvenue envoyé à ${user.email}`);
+        } catch (error) {
+            this.logger.error(`Erreur lors de l'envoi de l'email de bienvenue`, error);
         }
     }
 }

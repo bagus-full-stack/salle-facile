@@ -33,9 +33,10 @@ enum RoomCategory {
 }
 
 enum ReservationStatus {
-  PENDING // En attente (ex: paiement sur place prévu)
-  CONFIRMED // Validée et payée
-  CANCELLED // Annulée
+  PENDING // En attente (ex: paiement sur place prevu)
+  CONFIRMED // Valide et paye
+  CANCELLED // Annule
+  BLOCKED // Bloque par l'administrateur
 }
 
 enum PaymentStatus {
@@ -74,6 +75,11 @@ model User {
   // Droits et statuts
   role     Role    @default(USER)
   isActive Boolean @default(true)
+
+  // Email verification (OTP)
+  isEmailVerified       Boolean   @default(false)
+  verificationCode      String?
+  verificationCodeExpiry DateTime?
 
   // Relations
   reservations Reservation[]

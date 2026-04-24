@@ -1,8 +1,10 @@
-import {Controller, Post, Body, UseGuards, Get, Req, Res} from '@nestjs/common';
+import {Controller, Post, Body, UseGuards, Get, Req, Res, Patch} from '@nestjs/common';
 import * as express from 'express';
 import { AuthService } from './auth.service';
-import { LoginDto, RegisterDto } from './dto/auth.dto';
+import { LoginDto, RegisterDto, ForgotPasswordDto, ResetPasswordDto, VerifyEmailDto } from './dto/auth.dto';
 import {AuthGuard} from "@nestjs/passport";
+import { LinkedinAuthGuard } from './linkedin-auth.guard';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -13,9 +15,48 @@ export class AuthController {
         return this.authService.register(dto);
     }
 
+    @Post('verify-email')
+    async verifyEmail(@Body() dto: VerifyEmailDto) {
+        return this.authService.verifyEmail(dto.email, dto.code);
+    }
+
     @Post('login')
     async login(@Body() dto: LoginDto) {
         return this.authService.login(dto);
+    }
+
+    @Post('forgot-password')
+    async forgotPassword(@Body() dto: ForgotPasswordDto) {
+        return this.authService.forgotPassword(dto.email);
+    }
+
+    @Patch('reset-password')
+    async resetPassword(@Body() dto: ResetPasswordDto) {
+        return this.authService.resetPassword(dto.token, dto.newPassword);
+    }
+
+    // ✅ PHASE 2 : Logout endpoint
+    @Post('logout')
+    @UseGuards(JwtAuthGuard)
+    async logout(@Req() req: any) {
+        console.log('[auth.controller] POST /logout called for user:', req.user?.sub);
+        return { message: 'Déconnexion réussie', success: true };
+    }
+
+    // ✅ PHASE 3 : Refresh token endpoint
+    @Post('refresh-token')
+    @UseGuards(JwtAuthGuard)
+    async refreshToken(@Req() req: any) {
+        console.log('[auth.controller] POST /refresh-token called for user:', req.user?.sub);
+        const userId = req.user?.sub || req.user?.id;
+        
+        if (!userId) {
+            throw new Error('User ID not found in token');
+        }
+        
+        const result = await this.authService.refreshTokenForUser(userId);
+        console.log('[auth.controller] Token refreshed successfully for user:', userId);
+        return result;
     }
 
     @Get('google')
@@ -35,13 +76,13 @@ export class AuthController {
     }
 
     @Get('linkedin')
-    @UseGuards(AuthGuard('linkedin'))
+    @UseGuards(LinkedinAuthGuard)
     async linkedinAuth(@Req() req) {
         // Cette route redirige l'utilisateur vers la page de login LinkedIn
     }
 
     @Get('linkedin/callback')
-    @UseGuards(AuthGuard('linkedin'))
+    @UseGuards(LinkedinAuthGuard)
     async linkedinAuthRedirect(@Req() req, @Res() res: express.Response) {
         // LinkedIn nous renvoie ici. req.user contient le JWT généré par notre stratégie.
         const token = req.user.access_token;
